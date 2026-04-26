@@ -25,6 +25,7 @@ signals:
     void ipAssigned(QString ip);
     void dhcpRestored();
     void permissionDenied();
+    void operationFailed(QString reason);
 
 private:
     QObject *m_worker;

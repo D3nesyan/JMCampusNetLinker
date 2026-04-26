@@ -54,6 +54,7 @@ private:
     QString m_userId;
     QString m_password;
     ServiceType m_service;
+    int m_probeFallback = 0;
 };
 
 #endif // EPORTALAUTH_H

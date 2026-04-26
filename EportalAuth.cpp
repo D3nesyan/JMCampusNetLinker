@@ -1,5 +1,6 @@
 #include "EportalAuth.h"
 
+#include <QDebug>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QNetworkAccessManager>
@@ -11,7 +12,9 @@
 
 namespace {
 
-constexpr auto kProbeUrl = "http://g.cn/generate_204";
+// Standard captive-portal detection URL used by Chrome / Android.
+// Campus portals (including JMU) intercept this and redirect to the login page.
+constexpr auto kProbeUrl = "http://connectivitycheck.gstatic.com/generate_204";
 constexpr auto kLogoutProbeUrl = "http://10.8.2.2/eportal/redirectortosuccess.jsp";
 constexpr auto kLogoutUrl = "http://10.8.2.2/eportal/InterFace.do?method=logout";
 constexpr auto kUserAgent =
@@ -49,7 +52,26 @@ void EportalAuth::login(QString userId, QString password, ServiceType service)
     m_password = password;
     m_service = service;
 
-    QNetworkRequest request{QUrl(QString::fromLatin1(kProbeUrl))};
+    // Try multiple probe URLs in sequence (controlled by m_probeFallback).
+    // 0 = standard captive-portal detection URL
+    // 1 = direct portal access (may redirect to full login page)
+    // 2 = Windows NCSI detection URL
+    // 3 = portal logout-probe endpoint (may redirect with userIndex)
+    QUrl probeUrl;
+    if (m_probeFallback == 0) {
+        probeUrl = QUrl(QString::fromLatin1(kProbeUrl));
+    } else if (m_probeFallback == 1) {
+        probeUrl = QUrl(QStringLiteral("http://10.8.2.2/eportal/index.jsp"));
+    } else if (m_probeFallback == 2) {
+        probeUrl = QUrl(QStringLiteral("http://www.msftconnecttest.com/connecttest.txt"));
+    } else {
+        probeUrl = QUrl(QStringLiteral("http://10.8.2.2/eportal/redirectortosuccess.jsp"));
+    }
+
+    qDebug() << "[EportalAuth] Probing (fallback level" << m_probeFallback << "):" << probeUrl.toString();
+
+    QNetworkRequest request{probeUrl};
+    request.setRawHeader("User-Agent", QByteArray(kUserAgent));
     request.setAttribute(QNetworkRequest::RedirectPolicyAttribute,
                          QNetworkRequest::ManualRedirectPolicy);
 
@@ -78,11 +100,49 @@ void EportalAuth::handleProbeFinished()
 
     QNetworkReply *reply = m_reply;
     const QByteArray body = reply->readAll();
+    const int httpStatus =
+            reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+    const QString redirectAttr =
+            reply->attribute(QNetworkRequest::RedirectionTargetAttribute).toString();
+
+    qDebug() << "[EportalAuth] Probe finished"
+             << "url:" << reply->url().toString()
+             << "httpStatus:" << httpStatus
+             << "error:" << reply->error()
+             << "errorString:" << reply->errorString()
+             << "redirectAttribute:" << redirectAttr
+             << "bodySize:" << body.size()
+             << "headers:" << reply->rawHeaderPairs();
+    if (!body.isEmpty()) {
+        // The portal often uses GBK; try local 8-bit (GBK on Chinese Windows)
+        // first, then UTF-8.
+        const QString bodyText = QString::fromLocal8Bit(body.left(600));
+        qDebug() << "[EportalAuth] Probe body (first 600 chars):" << bodyText;
+    }
 
     const QString loginPageUrl = extractLoginPageUrl(reply, body);
+    qDebug() << "[EportalAuth] Extracted loginPageUrl:" << loginPageUrl;
     if (loginPageUrl.isEmpty()) {
         if (reply->error() != QNetworkReply::NoError) {
-            fail(reply->errorString());
+            if (m_probeFallback < 3) {
+                qDebug() << "[EportalAuth] Probe level" << m_probeFallback
+                         << "failed, trying level" << (m_probeFallback + 1);
+                ++m_probeFallback;
+                login(m_userId, m_password, m_service);
+                return;
+            }
+            fail(tr("All probe URLs failed. "
+                    "Make sure you are connected to campus WiFi. "
+                    "Try opening any website in a browser first, then retry."));
+            return;
+        }
+        // HTTP succeeded but no login URL found — the body is probably
+        // an error page (e.g. missing query parameters).  Try next fallback.
+        if (m_probeFallback < 3) {
+            qDebug() << "[EportalAuth] Probe level" << m_probeFallback
+                     << "got 200 but no login URL, trying level" << (m_probeFallback + 1);
+            ++m_probeFallback;
+            login(m_userId, m_password, m_service);
             return;
         }
         fail(tr("Failed to extract login page URL"));
@@ -119,9 +179,16 @@ void EportalAuth::handleProbeFinished()
 
     cleanupReply();
 
+    qDebug() << "[EportalAuth] POST login to:" << loginUrl;
+    qDebug() << "[EportalAuth] loginPageUrl:" << loginPageUrl;
+    qDebug() << "[EportalAuth] encodedQuery:" << encodedQuery;
+
     QNetworkRequest request{QUrl(loginUrl)};
-    request.setHeader(QNetworkRequest::ContentTypeHeader,
-                      QStringLiteral("application/x-www-form-urlencoded"));
+    request.setRawHeader("Content-Type",
+                         "application/x-www-form-urlencoded; charset=UTF-8");
+    request.setRawHeader("Accept",
+                         "text/html,application/xhtml+xml,application/xml;"
+                         "q=0.9,image/webp,image/apng,*/*;q=0.8");
     request.setRawHeader("Cookie", QByteArray(kCookieHeader));
     request.setRawHeader("User-Agent", QByteArray(kUserAgent));
     request.setRawHeader("Referer", loginPageUrl.toUtf8());
@@ -138,6 +205,18 @@ void EportalAuth::handleLoginFinished()
 
     QNetworkReply *reply = m_reply;
     const QByteArray body = reply->readAll();
+    const int httpStatus =
+            reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+
+    qDebug() << "[EportalAuth] Login POST finished"
+             << "httpStatus:" << httpStatus
+             << "error:" << reply->error()
+             << "errorString:" << reply->errorString()
+             << "bodySize:" << body.size();
+    if (!body.isEmpty()) {
+        qDebug() << "[EportalAuth] Login response body:"
+                 << QString::fromLocal8Bit(body.left(500));
+    }
 
     if (reply->error() != QNetworkReply::NoError) {
         fail(reply->errorString());
@@ -146,8 +225,35 @@ void EportalAuth::handleLoginFinished()
 
     cleanupReply();
 
-    // The eportal login POST itself is sufficient — if the HTTP request
-    // succeeded the campus network considers us authenticated.
+    // Parse the response — the eportal returns JSON with "result" / "message"
+    // fields, matching what the shell script extracts with awk.
+    const QJsonDocument doc = QJsonDocument::fromJson(body);
+    if (doc.isObject()) {
+        const QJsonObject obj = doc.object();
+        const QString result = obj.value(QStringLiteral("result")).toString();
+        const QString message = obj.value(QStringLiteral("message")).toString();
+        qDebug() << "[EportalAuth] Login response JSON — result:"
+                 << result << "message:" << message;
+
+        // The shell script treats an empty/non-existent "result" or "success"
+        // value as success.  Many eportal deployments return result="success"
+        // or result="" on success, and result="fail" / non-empty message on
+        // failure.
+        if (!result.isEmpty()
+            && result != QStringLiteral("success")
+            && result != QStringLiteral("ok")) {
+            const QString reason = message.isEmpty() ? result : message;
+            fail(reason);
+            return;
+        }
+        if (!message.isEmpty()
+            && message != QStringLiteral("success")
+            && message != QStringLiteral("ok")) {
+            fail(message);
+            return;
+        }
+    }
+
     emit authSuccess();
 }
 
@@ -239,6 +345,7 @@ QString EportalAuth::encodeQueryString(const QString &queryString)
 
 QString EportalAuth::extractLoginPageUrl(const QNetworkReply *reply, const QByteArray &body)
 {
+    // 1) HTTP redirect (302) — portal redirected us to the login page.
     const QVariant redirectTarget =
             reply->attribute(QNetworkRequest::RedirectionTargetAttribute);
     if (redirectTarget.isValid()) {
@@ -248,7 +355,24 @@ QString EportalAuth::extractLoginPageUrl(const QNetworkReply *reply, const QByte
         }
     }
 
-    const QString text = QString::fromUtf8(body);
+    // The portal may use GBK encoding; check the Content-Type header.
+    const QString contentType =
+            reply->header(QNetworkRequest::ContentTypeHeader).toString();
+    const bool isGbk = contentType.contains(QStringLiteral("GBK"), Qt::CaseInsensitive)
+                       || contentType.contains(QStringLiteral("GB2312"), Qt::CaseInsensitive);
+    const QString text = isGbk ? QString::fromLocal8Bit(body) : QString::fromUtf8(body);
+
+    // 2) Match the shell script's `awk -F \' '{print $2}'` — the portal
+    //    typically embeds the login URL inside single quotes (meta-refresh /
+    //    JavaScript redirect).  Walk every single-quoted segment.
+    const QStringList fields = text.split(QLatin1Char('\''));
+    for (const QString &field : fields) {
+        if (field.contains(QStringLiteral("index.jsp"))) {
+            return field;
+        }
+    }
+
+    // 3) Regex fallback — a URL containing "index.jsp" anywhere in the raw HTML.
     const QRegularExpression re(
             QStringLiteral(R"((https?://[^\s"'<>]+index\.jsp[^\s"'<>]*))"),
             QRegularExpression::CaseInsensitiveOption);

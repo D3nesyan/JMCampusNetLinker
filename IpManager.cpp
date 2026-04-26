@@ -9,42 +9,47 @@
 
 namespace {
 
-constexpr auto kSubnetMask = "255.255.0.0";
 constexpr auto kGateway = "172.19.0.1";
 constexpr auto kDns1 = "172.17.8.32";
 constexpr auto kDns2 = "172.17.8.33";
 constexpr auto kNetworkPrefix = "172.19";
 
-QString netshNameArg(const QString &adapter)
+QString psEscape(const QString &str)
 {
-    if (adapter.contains(QLatin1Char(' '))) {
-        return QStringLiteral("name=\"%1\"").arg(adapter);
-    }
-    return QStringLiteral("name=%1").arg(adapter);
+    QString escaped = str;
+    escaped.replace('\'', QStringLiteral("''"));
+    return escaped;
 }
 
-bool runNetsh(const QStringList &args, QString *outErr = nullptr)
+bool runPowerShell(const QString &script, QString *outErr = nullptr)
 {
     QProcess process;
-    process.start(QStringLiteral("netsh"), args);
+    process.start(QStringLiteral("powershell"), {
+        QStringLiteral("-NoProfile"),
+        QStringLiteral("-Command"),
+        script
+    });
     if (!process.waitForStarted(5000)) {
         if (outErr) {
-            *outErr = QStringLiteral("Failed to start netsh");
+            *outErr = QStringLiteral("Failed to start PowerShell");
         }
         return false;
     }
 
-    if (!process.waitForFinished(15000)) {
+    if (!process.waitForFinished(30000)) {
         process.kill();
         if (outErr) {
-            *outErr = QStringLiteral("netsh timed out");
+            *outErr = QStringLiteral("PowerShell timed out");
         }
         return false;
     }
 
     if (process.exitCode() != 0) {
         if (outErr) {
-            *outErr = QString::fromLocal8Bit(process.readAllStandardError()).trimmed();
+            const QString stdErr = QString::fromLocal8Bit(process.readAllStandardError()).trimmed();
+            *outErr = stdErr.isEmpty()
+                    ? QString::fromLocal8Bit(process.readAllStandardOutput()).trimmed()
+                    : stdErr;
         }
         return false;
     }
@@ -54,17 +59,56 @@ bool runNetsh(const QStringList &args, QString *outErr = nullptr)
 
 bool isPermissionError(const QString &errOutput)
 {
-    return errOutput.contains(QStringLiteral("requires elevation"))
-           || errOutput.contains(QStringLiteral("Access is denied"))
-           || errOutput.contains(QStringLiteral("0x80070005"))
+    return errOutput.contains(QStringLiteral("Access is denied"))
+           || errOutput.contains(QStringLiteral("Access denied"))
+           || errOutput.contains(QStringLiteral("拒绝访问"))
+           || errOutput.contains(QStringLiteral("requires elevation"))
+           || errOutput.contains(QStringLiteral("Run as administrator"))
            || errOutput.contains(QStringLiteral("administrator"))
-           || errOutput.contains(QStringLiteral("run as administrator"))
+           || errOutput.contains(QStringLiteral("0x80070005"))
+           || errOutput.contains(QStringLiteral("UnauthorizedAccessException"))
+           || errOutput.contains(QStringLiteral("Permission denied"))
            || errOutput.contains(QStringLiteral("权限"))
            || errOutput.contains(QStringLiteral("管理员"));
 }
 
+QString setStaticIpScript(const QString &adapter, const QString &ip)
+{
+    const QString alias = psEscape(adapter);
+    return QStringLiteral(
+        "$ErrorActionPreference = 'Stop'; "
+        "try { "
+        "  Get-NetIPAddress -InterfaceAlias '%1' -AddressFamily IPv4 -ErrorAction SilentlyContinue | "
+        "    Where-Object { $_.PrefixOrigin -ne 'Dhcp' } | "
+        "    Remove-NetIPAddress -Confirm:$false -ErrorAction SilentlyContinue; "
+        "  Get-NetRoute -InterfaceAlias '%1' -DestinationPrefix '0.0.0.0/0' -ErrorAction SilentlyContinue | "
+        "    Remove-NetRoute -Confirm:$false -ErrorAction SilentlyContinue; "
+        "  New-NetIPAddress -InterfaceAlias '%1' -AddressFamily IPv4 -IPAddress '%2' -PrefixLength 16 -DefaultGateway %3; "
+        "  Set-DnsClientServerAddress -InterfaceAlias '%1' -ServerAddresses ('%4', '%5'); "
+        "} catch { "
+        "  Write-Error $_.Exception.Message; "
+        "  exit 1; "
+        "}")
+        .arg(alias, ip, QString::fromLatin1(kGateway),
+             QString::fromLatin1(kDns1), QString::fromLatin1(kDns2));
+}
+
+QString restoreDhcpScript(const QString &adapter)
+{
+    const QString alias = psEscape(adapter);
+    return QStringLiteral(
+        "$ErrorActionPreference = 'Stop'; "
+        "try { "
+        "  Set-NetIPInterface -InterfaceAlias '%1' -AddressFamily IPv4 -Dhcp Enabled; "
+        "  Set-DnsClientServerAddress -InterfaceAlias '%1' -ResetServerAddresses; "
+        "} catch { "
+        "  Write-Error $_.Exception.Message; "
+        "  exit 1; "
+        "}").arg(alias);
+}
+
 // ---------------------------------------------------------------------------
-// Worker object that runs blocking netsh calls on a background thread
+// Worker object that runs blocking PowerShell calls on a background thread
 // ---------------------------------------------------------------------------
 
 class IpWorker : public QObject
@@ -108,51 +152,15 @@ public slots:
             return;
         }
 
-        // Set static IP address
-        const QString nameArg = netshNameArg(adapter);
-        {
-            QStringList args;
-            args << QStringLiteral("interface") << QStringLiteral("ip") << QStringLiteral("set")
-                 << QStringLiteral("address") << nameArg
-                 << QStringLiteral("static") << ip << kSubnetMask << kGateway;
-
-            QString errOutput;
-            if (!runNetsh(args, &errOutput)) {
-                if (isPermissionError(errOutput)) {
-                    emit permissionDenied();
-                } else {
-                    emit noAvailableIp();
-                }
-                return;
+        const QString script = setStaticIpScript(adapter, ip);
+        QString errOutput;
+        if (!runPowerShell(script, &errOutput)) {
+            if (isPermissionError(errOutput)) {
+                emit permissionDenied();
+            } else {
+                emit operationFailed(errOutput);
             }
-        }
-
-        // Set primary DNS
-        {
-            QStringList args;
-            args << QStringLiteral("interface") << QStringLiteral("ip") << QStringLiteral("set")
-                 << QStringLiteral("dns") << nameArg
-                 << QStringLiteral("static") << kDns1;
-
-            QString errOutput;
-            if (!runNetsh(args, &errOutput)) {
-                if (isPermissionError(errOutput)) {
-                    emit permissionDenied();
-                } else {
-                    emit noAvailableIp();
-                }
-                return;
-            }
-        }
-
-        // Add secondary DNS
-        {
-            QStringList args;
-            args << QStringLiteral("interface") << QStringLiteral("ip") << QStringLiteral("add")
-                 << QStringLiteral("dns") << nameArg
-                 << kDns2 << QStringLiteral("index=2");
-
-            runNetsh(args); // best-effort — primary DNS is already set
+            return;
         }
 
         emit ipAssigned(ip);
@@ -160,39 +168,15 @@ public slots:
 
     void doSetStaticIp(const QString &adapter, const QString &ip)
     {
-        const QString nameArg = netshNameArg(adapter);
-
-        {
-            QStringList args;
-            args << QStringLiteral("interface") << QStringLiteral("ip") << QStringLiteral("set")
-                 << QStringLiteral("address") << nameArg
-                 << QStringLiteral("static") << ip << kSubnetMask << kGateway;
-
-            QString errOutput;
-            if (!runNetsh(args, &errOutput)) {
-                if (isPermissionError(errOutput)) {
-                    emit permissionDenied();
-                }
-                return;
+        const QString script = setStaticIpScript(adapter, ip);
+        QString errOutput;
+        if (!runPowerShell(script, &errOutput)) {
+            if (isPermissionError(errOutput)) {
+                emit permissionDenied();
+            } else {
+                emit operationFailed(errOutput);
             }
-        }
-
-        {
-            QStringList args;
-            args << QStringLiteral("interface") << QStringLiteral("ip") << QStringLiteral("set")
-                 << QStringLiteral("dns") << nameArg
-                 << QStringLiteral("static") << kDns1;
-
-            runNetsh(args);
-        }
-
-        {
-            QStringList args;
-            args << QStringLiteral("interface") << QStringLiteral("ip") << QStringLiteral("add")
-                 << QStringLiteral("dns") << nameArg
-                 << kDns2 << QStringLiteral("index=2");
-
-            runNetsh(args);
+            return;
         }
 
         emit ipAssigned(ip);
@@ -200,38 +184,15 @@ public slots:
 
     void doRestoreDhcp(const QString &adapter)
     {
-        const QString nameArg = netshNameArg(adapter);
-
-        // Restore DHCP for IP address
-        {
-            QStringList args;
-            args << QStringLiteral("interface") << QStringLiteral("ip") << QStringLiteral("set")
-                 << QStringLiteral("address") << nameArg
-                 << QStringLiteral("source=dhcp");
-
-            QString errOutput;
-            if (!runNetsh(args, &errOutput)) {
-                if (isPermissionError(errOutput)) {
-                    emit permissionDenied();
-                    return;
-                }
+        const QString script = restoreDhcpScript(adapter);
+        QString errOutput;
+        if (!runPowerShell(script, &errOutput)) {
+            if (isPermissionError(errOutput)) {
+                emit permissionDenied();
+            } else {
+                emit operationFailed(errOutput);
             }
-        }
-
-        // Restore DHCP for DNS
-        {
-            QStringList args;
-            args << QStringLiteral("interface") << QStringLiteral("ip") << QStringLiteral("set")
-                 << QStringLiteral("dns") << nameArg
-                 << QStringLiteral("source=dhcp");
-
-            QString errOutput;
-            if (!runNetsh(args, &errOutput)) {
-                if (isPermissionError(errOutput)) {
-                    emit permissionDenied();
-                    return;
-                }
-            }
+            return;
         }
 
         emit dhcpRestored();
@@ -242,6 +203,7 @@ signals:
     void ipAssigned(const QString &ip);
     void dhcpRestored();
     void permissionDenied();
+    void operationFailed(const QString &reason);
 };
 
 } // namespace
@@ -269,6 +231,8 @@ IpManager::IpManager(QObject *parent)
             this, &IpManager::dhcpRestored);
     connect(worker, &IpWorker::permissionDenied,
             this, &IpManager::permissionDenied);
+    connect(worker, &IpWorker::operationFailed,
+            this, &IpManager::operationFailed);
 }
 
 IpManager::~IpManager()
@@ -285,7 +249,6 @@ QStringList IpManager::listAdapters()
 
     for (const QNetworkInterface &iface : interfaces) {
         if (iface.flags().testFlag(QNetworkInterface::IsUp)
-            && iface.flags().testFlag(QNetworkInterface::IsRunning)
             && !iface.flags().testFlag(QNetworkInterface::IsLoopBack)) {
 
             const QString name = iface.humanReadableName();

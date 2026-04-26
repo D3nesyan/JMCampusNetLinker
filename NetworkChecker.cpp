@@ -21,7 +21,8 @@ void NetworkChecker::checkOnline()
 {
     cleanupReply();
 
-    QNetworkRequest request(QUrl(QStringLiteral("http://g.cn/generate_204")));
+    // g.cn is blocked in mainland China; use a China-accessible URL instead.
+    QNetworkRequest request(QUrl(QStringLiteral("https://www.baidu.com")));
     m_reply = m_manager->get(request);
 
     connect(m_reply, &QNetworkReply::finished,
@@ -40,7 +41,7 @@ void NetworkChecker::handleReplyFinished()
     const int statusCode =
             m_reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
 
-    if (error == QNetworkReply::NoError && statusCode == 204) {
+    if (error == QNetworkReply::NoError && statusCode == 200) {
         finishCheck(true);
         return;
     }

@@ -159,6 +159,11 @@ IpManagerWidget::IpManagerWidget(QWidget *parent)
                          kWarningColor);
     });
 
+    connect(m_ipManager, &IpManager::operationFailed, this,
+            [this](const QString &reason) {
+                setStatusMessage(QStringLiteral("操作失败: %1").arg(reason), kErrorColor);
+            });
+
     refreshAdapters();
     refreshTable();
     setStatusMessage(QStringLiteral("就绪"), QStringLiteral("#555555"));
