@@ -46,11 +46,17 @@ EportalAuth::EportalAuth(QObject *parent)
 
 void EportalAuth::login(QString userId, QString password, ServiceType service)
 {
-    cleanupReply();
-
     m_userId = userId;
     m_password = password;
     m_service = service;
+    m_probeFallback = 0;
+    m_probeRetries = 0;
+    startProbe();
+}
+
+void EportalAuth::startProbe()
+{
+    cleanupReply();
 
     // Try multiple probe URLs in sequence (controlled by m_probeFallback).
     // 0 = standard captive-portal detection URL
@@ -128,7 +134,7 @@ void EportalAuth::handleProbeFinished()
                 qDebug() << "[EportalAuth] Probe level" << m_probeFallback
                          << "failed, trying level" << (m_probeFallback + 1);
                 ++m_probeFallback;
-                login(m_userId, m_password, m_service);
+                startProbe();
                 return;
             }
             fail(tr("All probe URLs failed. "
@@ -142,7 +148,7 @@ void EportalAuth::handleProbeFinished()
             qDebug() << "[EportalAuth] Probe level" << m_probeFallback
                      << "got 200 but no login URL, trying level" << (m_probeFallback + 1);
             ++m_probeFallback;
-            login(m_userId, m_password, m_service);
+            startProbe();
             return;
         }
         fail(tr("Failed to extract login page URL"));
@@ -150,25 +156,30 @@ void EportalAuth::handleProbeFinished()
     }
 
     QUrl loginPage(loginPageUrl);
-    if (!loginPage.isValid()) {
-        fail(tr("Invalid login page URL"));
+    if (!loginPage.isValid() || !loginPage.path().contains(QStringLiteral("index.jsp"))) {
+        // The portal returned a redirect that is not the real login page
+        // (e.g. 123.123.123.123).  Retry from a known-good probe level.
+        constexpr int kMaxProbeRetries = 8;
+        qDebug() << "[EportalAuth] Invalid login page URL, retry" << m_probeRetries;
+        if (++m_probeRetries < kMaxProbeRetries) {
+            m_probeFallback = 2;  // go back to the level that normally works
+            startProbe();
+            return;
+        }
+        fail(tr("Portal returned an invalid redirect. "
+                "The campus network may be unstable — try again in a moment."));
         return;
     }
 
     const QString loginPagePath = loginPage.path();
     QString loginUrl;
-    if (loginPagePath.contains(QStringLiteral("index.jsp"))) {
-        const QString loginPath = QString(loginPagePath).replace(
-                QStringLiteral("index.jsp"),
-                QStringLiteral("InterFace.do"));
-        QUrl postUrl(loginPage);
-        postUrl.setPath(loginPath);
-        postUrl.setQuery(QStringLiteral("method=login"));
-        loginUrl = postUrl.toString(QUrl::FullyEncoded);
-    } else {
-        fail(tr("Login page URL does not contain index.jsp"));
-        return;
-    }
+    const QString loginPath = QString(loginPagePath).replace(
+            QStringLiteral("index.jsp"),
+            QStringLiteral("InterFace.do"));
+    QUrl postUrl(loginPage);
+    postUrl.setPath(loginPath);
+    postUrl.setQuery(QStringLiteral("method=login"));
+    loginUrl = postUrl.toString(QUrl::FullyEncoded);
 
     const QString encodedQuery = encodeQueryString(loginPage.query(QUrl::FullyEncoded));
     const QByteArray bodyData = buildFormBody(

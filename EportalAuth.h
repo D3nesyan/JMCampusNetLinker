@@ -46,6 +46,7 @@ private:
                                  const QString &password,
                                  const QString &service,
                                  const QString &queryString);
+    void startProbe();
     void fail(const QString &reason);
     void cleanupReply();
 
@@ -55,6 +56,7 @@ private:
     QString m_password;
     ServiceType m_service;
     int m_probeFallback = 0;
+    int m_probeRetries = 0;
 };
 
 #endif // EPORTALAUTH_H
