@@ -104,6 +104,14 @@ MainWindow::MainWindow(QWidget *parent)
             [this] { saveSettings(); });
     connect(ui->serviceComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
             [this](int) { saveSettings(); });
+    connect(ui->rememberPwdCheckBox, &QCheckBox::checkStateChanged, this,
+            [this](Qt::CheckState state) {
+                if (state == Qt::Unchecked) {
+                    ui->passwordEdit->clear();
+                }
+                saveSettings();
+            });
+
     connect(ui->autoStartCheckBox, &QCheckBox::checkStateChanged, this,
             [this](Qt::CheckState) { saveSettings(); });
 
@@ -229,8 +237,13 @@ void MainWindow::setStatusLabel(bool isOnline, const QString &text)
 void MainWindow::loadSettings()
 {
     ui->userIdEdit->setText(m_settings.value(QStringLiteral("userId")).toString());
-    ui->passwordEdit->setText(
-            decryptPwd(m_settings.value(QStringLiteral("encryptedPassword")).toString()));
+
+    const bool rememberPwd = m_settings.value(QStringLiteral("rememberPassword"), false).toBool();
+    ui->rememberPwdCheckBox->setChecked(rememberPwd);
+    if (rememberPwd) {
+        ui->passwordEdit->setText(
+                decryptPwd(m_settings.value(QStringLiteral("encryptedPassword")).toString()));
+    }
 
     const int serviceIndex = m_settings.value(QStringLiteral("serviceIndex"), 0).toInt();
     ui->serviceComboBox->setCurrentIndex(qBound(0, serviceIndex, ui->serviceComboBox->count() - 1));
@@ -243,8 +256,16 @@ void MainWindow::loadSettings()
 void MainWindow::saveSettings()
 {
     m_settings.setValue(QStringLiteral("userId"), ui->userIdEdit->text().trimmed());
-    m_settings.setValue(QStringLiteral("encryptedPassword"),
-                        encryptPwd(ui->passwordEdit->text()));
+
+    const bool rememberPwd = ui->rememberPwdCheckBox->isChecked();
+    m_settings.setValue(QStringLiteral("rememberPassword"), rememberPwd);
+    if (rememberPwd) {
+        m_settings.setValue(QStringLiteral("encryptedPassword"),
+                            encryptPwd(ui->passwordEdit->text()));
+    } else {
+        m_settings.remove(QStringLiteral("encryptedPassword"));
+    }
+
     m_settings.setValue(QStringLiteral("serviceIndex"), ui->serviceComboBox->currentIndex());
 
     QSettings reg(QStringLiteral("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run"),

@@ -81,7 +81,18 @@
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QLineEdit" name="passwordEdit"/>
+           <layout class="QHBoxLayout" name="passwordRowLayout">
+            <item>
+             <widget class="QLineEdit" name="passwordEdit"/>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="rememberPwdCheckBox">
+              <property name="text">
+               <string>记住密码</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
           <item row="2" column="0">
            <widget class="QLabel" name="serviceTitleLabel">
