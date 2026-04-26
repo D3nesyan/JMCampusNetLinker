@@ -4,19 +4,14 @@
 #include "IpManagerWidget.h"
 #include "NetworkChecker.h"
 
-#include <QAction>
 #include <QApplication>
 #include <QCheckBox>
-#include <QCloseEvent>
 #include <QComboBox>
 #include <QLineEdit>
-#include <QMenu>
 #include <QMessageBox>
 #include <QProcess>
 #include <QPushButton>
 #include <QStringList>
-#include <QStyle>
-#include <QSystemTrayIcon>
 #include <QTimer>
 #include <QVBoxLayout>
 
@@ -41,15 +36,10 @@ MainWindow::MainWindow(QWidget *parent)
     , m_auth(new EportalAuth(this))
     , m_ipManagerWidget(new IpManagerWidget(this))
     , m_onlineCheckTimer(new QTimer(this))
-    , m_trayIcon(new QSystemTrayIcon(this))
-    , m_trayMenu(new QMenu(this))
-    , m_showAction(new QAction(QStringLiteral("显示窗口"), this))
-    , m_quitAction(new QAction(QStringLiteral("退出程序"), this))
     , m_settings(QStringLiteral("JMCampusNetLinker"), QStringLiteral("JMCampusNetLinker"))
     , m_actionState(ActionState::None)
     , m_reloginAttempts(0)
     , m_isLoggedIn(false)
-    , m_quitRequested(false)
 {
     ui->setupUi(this);
 
@@ -71,33 +61,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     m_onlineCheckTimer->setInterval(kOnlineCheckIntervalMs);
 
-    m_trayMenu->addAction(m_showAction);
-    m_trayMenu->addSeparator();
-    m_trayMenu->addAction(m_quitAction);
-
-    m_trayIcon->setIcon(style()->standardIcon(QStyle::SP_ComputerIcon));
-    m_trayIcon->setToolTip(QStringLiteral("JiMei Campus NetLinker"));
-    m_trayIcon->setContextMenu(m_trayMenu);
-    m_trayIcon->show();
-
-    connect(m_showAction, &QAction::triggered, this, [this] {
-        showNormal();
-        raise();
-        activateWindow();
-    });
-
-    connect(m_quitAction, &QAction::triggered, this, [this] {
-        m_quitRequested = true;
-        qApp->quit();
-    });
-
-    connect(m_trayIcon, &QSystemTrayIcon::activated, this,
-            [this](QSystemTrayIcon::ActivationReason reason) {
-                if (reason == QSystemTrayIcon::Trigger) {
-                    toggleWindowVisibility();
-                }
-            });
-
     connect(ui->userIdEdit, &QLineEdit::textChanged, this,
             [this] { saveSettings(); });
     connect(ui->passwordEdit, &QLineEdit::editingFinished, this,
@@ -111,9 +74,6 @@ MainWindow::MainWindow(QWidget *parent)
                 }
                 saveSettings();
             });
-
-    connect(ui->autoStartCheckBox, &QCheckBox::checkStateChanged, this,
-            [this](Qt::CheckState) { saveSettings(); });
 
     connect(ui->loginButton, &QPushButton::clicked, this, [this] {
         beginLogin(ActionState::Login);
@@ -133,13 +93,6 @@ MainWindow::MainWindow(QWidget *parent)
         m_reloginAttempts = 0;
         setStatusLabel(true, tr("Status: Online"));
         updateButtonStates();
-
-        if (m_trayIcon->isVisible()) {
-            m_trayIcon->showMessage(QStringLiteral("已连接"),
-                                    QStringLiteral("校园网认证成功"),
-                                    QSystemTrayIcon::Information,
-                                    3000);
-        }
     });
 
     connect(m_auth, &EportalAuth::authFailed, this, [this](const QString &reason) {
@@ -214,17 +167,6 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::closeEvent(QCloseEvent *event)
-{
-    if (m_quitRequested) {
-        event->accept();
-        return;
-    }
-
-    hide();
-    event->ignore();
-}
-
 void MainWindow::setStatusLabel(bool isOnline, const QString &text)
 {
     const QString color = isOnline ? "#1b8a3a" : "#c0392b";
@@ -247,10 +189,6 @@ void MainWindow::loadSettings()
 
     const int serviceIndex = m_settings.value(QStringLiteral("serviceIndex"), 0).toInt();
     ui->serviceComboBox->setCurrentIndex(qBound(0, serviceIndex, ui->serviceComboBox->count() - 1));
-
-    QSettings reg(QStringLiteral("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run"),
-                  QSettings::NativeFormat);
-    ui->autoStartCheckBox->setChecked(reg.contains(QStringLiteral("CampusNetTool")));
 }
 
 void MainWindow::saveSettings()
@@ -267,15 +205,6 @@ void MainWindow::saveSettings()
     }
 
     m_settings.setValue(QStringLiteral("serviceIndex"), ui->serviceComboBox->currentIndex());
-
-    QSettings reg(QStringLiteral("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run"),
-                  QSettings::NativeFormat);
-    if (ui->autoStartCheckBox->isChecked()) {
-        reg.setValue(QStringLiteral("CampusNetTool"),
-                     qApp->applicationFilePath() + QStringLiteral(" --minimized"));
-    } else {
-        reg.remove(QStringLiteral("CampusNetTool"));
-    }
 }
 
 QString MainWindow::encryptPwd(QString plainText)
@@ -382,12 +311,6 @@ void MainWindow::handleOfflineDetected(const QString &reason)
         QMessageBox::warning(this, tr("Reconnect Failed"),
                              tr("Auto re-login exceeded %1 attempts. Please log in manually.")
                                      .arg(kMaxReloginAttempts));
-        if (m_trayIcon->isVisible()) {
-            m_trayIcon->showMessage(QStringLiteral("连接失败"),
-                                    QStringLiteral("请检查账号密码"),
-                                    QSystemTrayIcon::Warning,
-                                    5000);
-        }
         updateButtonStates();
         return;
     }
@@ -401,18 +324,6 @@ void MainWindow::updateWindowTitle(bool isOnline)
     setWindowTitle(isOnline
                    ? QStringLiteral("JiMei Campus NetLinker - 在线")
                    : QStringLiteral("JiMei Campus NetLinker - 未认证"));
-}
-
-void MainWindow::toggleWindowVisibility()
-{
-    if (isVisible()) {
-        hide();
-        return;
-    }
-
-    showNormal();
-    raise();
-    activateWindow();
 }
 
 EportalAuth::ServiceType MainWindow::currentServiceType() const

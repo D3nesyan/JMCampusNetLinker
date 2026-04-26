@@ -139,13 +139,6 @@
             </item>
            </layout>
           </item>
-          <item row="5" column="1">
-           <widget class="QCheckBox" name="autoStartCheckBox">
-            <property name="text">
-             <string>开机自动启动</string>
-            </property>
-           </widget>
-          </item>
          </layout>
         </item>
         <item>
