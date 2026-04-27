@@ -43,7 +43,7 @@ private:
     void startOnlineMonitor();
     void stopOnlineMonitor();
     void handleOfflineDetected(const QString &reason);
-    void updateWindowTitle(bool isOnline);
+
     EportalAuth::ServiceType currentServiceType() const;
 
     Ui::MainWindow *ui;

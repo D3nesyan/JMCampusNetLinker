@@ -58,7 +58,7 @@ MainWindow::MainWindow(QWidget *parent)
     loadSettings();
     m_loading = false;
     setStatusLabel(false, tr("Status: Idle"));
-    updateWindowTitle(false);
+    setWindowTitle(QStringLiteral("JiMei Campus NetLinker"));
 
     m_onlineCheckTimer->setInterval(kOnlineCheckIntervalMs);
 
@@ -174,7 +174,7 @@ void MainWindow::setStatusLabel(bool isOnline, const QString &text)
     ui->statusLabel->setText(text);
     ui->statusLabel->setStyleSheet(
             QString("QLabel { color: %1; font-weight: 600; }").arg(color));
-    updateWindowTitle(isOnline);
+
 }
 
 void MainWindow::loadSettings()
@@ -326,12 +326,6 @@ void MainWindow::handleOfflineDetected(const QString &reason)
     beginLogin(ActionState::AutoRelogin);
 }
 
-void MainWindow::updateWindowTitle(bool isOnline)
-{
-    setWindowTitle(isOnline
-                   ? QStringLiteral("JiMei Campus NetLinker - 在线")
-                   : QStringLiteral("JiMei Campus NetLinker - 未认证"));
-}
 
 EportalAuth::ServiceType MainWindow::currentServiceType() const
 {
