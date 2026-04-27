@@ -31,6 +31,7 @@ set(PROJECT_SOURCES
         ThemeManager.h
         fluent.qss
         resources.qrc
+        resources.rc
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
