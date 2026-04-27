@@ -299,7 +299,7 @@ QCheckBox::indicator:hover {
 QCheckBox::indicator:checked {
     background-color: {{ThemeColorPrimary}};
     border-color: {{ThemeColorPrimary}};
-    image: url(:/icons/checkmark.xpm);
+    image: url(:/icons/checkmark.svg);
 }
 
 QCheckBox::indicator:checked:hover {

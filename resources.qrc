@@ -2,7 +2,7 @@
   <qresource prefix="/icons">
     <file>chevron-down.xpm</file>
     <file>chevron-up.xpm</file>
-    <file>checkmark.xpm</file>
+    <file>checkmark.svg</file>
     <file>jimei_auth_icon.svg</file>
   </qresource>
 </RCC>
