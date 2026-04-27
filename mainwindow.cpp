@@ -62,7 +62,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     m_onlineCheckTimer->setInterval(kOnlineCheckIntervalMs);
 
-    connect(ui->userIdEdit, &QLineEdit::textChanged, this,
+    connect(ui->userIdEdit, &QLineEdit::editingFinished, this,
             [this] { saveSettings(); });
     connect(ui->passwordEdit, &QLineEdit::editingFinished, this,
             [this] { saveSettings(); });
