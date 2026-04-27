@@ -1,0 +1,20 @@
+<svg width="1024" height="1024" viewBox="0 0 680 680" role="img" xmlns="http://www.w3.org/2000/svg">
+  <title>校园网认证工具图标</title>
+  <desc>简洁风校园网认证图标，盾牌加锁与WiFi元素</desc>
+
+  <circle cx="340" cy="340" r="300" fill="#f42a10"/>
+
+  <path d="M340 130 L500 192 L500 362 Q500 468 340 530 Q180 468 180 362 L180 192 Z"
+        fill="#ffffff" fill-opacity="0.13" stroke="#ffffff" stroke-width="10" stroke-opacity="0.7" stroke-linejoin="round"/>
+
+  <path d="M254 300 Q340 256 426 300" fill="none" stroke="#ffffff" stroke-width="18" stroke-linecap="round"/>
+  <path d="M278 332 Q340 300 402 332" fill="none" stroke="#ffffff" stroke-width="16" stroke-linecap="round" stroke-opacity="0.8"/>
+  <path d="M304 364 Q340 348 376 364" fill="none" stroke="#ffffff" stroke-width="14" stroke-linecap="round" stroke-opacity="0.65"/>
+
+  <rect x="304" y="392" width="72" height="56" rx="12" fill="#ffffff"/>
+  <path d="M316 392 L316 368 Q316 338 340 338 Q364 338 364 368 L364 392"
+        fill="none" stroke="#ffffff" stroke-width="14" stroke-linecap="round"/>
+  <circle cx="340" cy="416" r="7" fill="#f42a10"/>
+  <rect x="336" y="416" width="8" height="12" rx="3" fill="#f42a10"/>
+
+</svg>

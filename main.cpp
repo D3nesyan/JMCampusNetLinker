@@ -2,6 +2,7 @@
 
 #include <QApplication>
 #include <QDir>
+#include <QIcon>
 #include <QFile>
 #include <QFontDatabase>
 #include <QTextStream>
@@ -23,6 +24,8 @@ int main(int argc, char *argv[])
     defaultFont.setStyleStrategy(QFont::PreferAntialias);
     defaultFont.setHintingPreference(QFont::PreferNoHinting);
     a.setFont(defaultFont);
+
+    a.setWindowIcon(QIcon(QStringLiteral(":/icons/jimei_auth_icon.svg")));
 
     // Load Fluent 2 stylesheet
     QFile qss(QCoreApplication::applicationDirPath() + QStringLiteral("/fluent2.qss"));

@@ -3,5 +3,6 @@
     <file>chevron-down.xpm</file>
     <file>chevron-up.xpm</file>
     <file>checkmark.xpm</file>
+    <file>jimei_auth_icon.svg</file>
   </qresource>
 </RCC>
