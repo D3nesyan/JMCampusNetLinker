@@ -242,6 +242,36 @@ IpManager::~IpManager()
     delete m_worker;
 }
 
+// Virtual adapter name patterns to exclude (case-insensitive)
+static bool isVirtualAdapter(const QString &name)
+{
+    static const QStringList virtualPatterns = {
+        QStringLiteral("ZeroTier"),
+        QStringLiteral("VMware"),
+        QStringLiteral("VirtualBox"),
+        QStringLiteral("vEthernet"),
+        QStringLiteral("Hyper-V"),
+        QStringLiteral("WSL"),
+        QStringLiteral("Bluetooth"),
+        QStringLiteral("TAP"),
+        QStringLiteral("VPN"),
+        QStringLiteral("Tunnel"),
+        QStringLiteral("Tailscale"),
+        QStringLiteral("WireGuard"),
+        QStringLiteral("Radmin"),
+        QStringLiteral("Hamachi"),
+        QStringLiteral("Loopback"),
+    };
+
+    const QString lower = name.toLower();
+    for (const QString &pattern : virtualPatterns) {
+        if (lower.contains(pattern.toLower())) {
+            return true;
+        }
+    }
+    return false;
+}
+
 QStringList IpManager::listAdapters()
 {
     QStringList adapters;
@@ -252,7 +282,7 @@ QStringList IpManager::listAdapters()
             && !iface.flags().testFlag(QNetworkInterface::IsLoopBack)) {
 
             const QString name = iface.humanReadableName();
-            if (!name.isEmpty()) {
+            if (!name.isEmpty() && !isVirtualAdapter(name)) {
                 adapters.append(name);
             }
         }
