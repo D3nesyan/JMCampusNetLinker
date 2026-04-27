@@ -58,6 +58,17 @@ IpManagerWidget::IpManagerWidget(QWidget *parent)
     adapterRowLayout->addWidget(m_refreshButton);
 
     configLayout->addRow(QStringLiteral("网卡选择"), adapterRowLayout);
+
+    auto *hintLabel = new QLabel(
+        QStringLiteral("请选择连接校园网的网卡，选错可能导致各种异常。\n"
+                       "随机分配 IP 可绕过夜间断网（可能不可用，可多试几次）。\n"
+                       "切换其他网络前务必先点击「还原 DHCP」恢复。"),
+        configGroupBox);
+    hintLabel->setWordWrap(true);
+    hintLabel->setStyleSheet(
+        QStringLiteral("QLabel { color: #616161; font-size: 12px; padding-left: 4px; }"));
+    configLayout->addRow(hintLabel);
+
     configLayout->addRow(QStringLiteral("网段"),
                          new QLabel(QStringLiteral("172.19.0.0 / 16"), configGroupBox));
     configLayout->addRow(QStringLiteral("子网掩码"),
