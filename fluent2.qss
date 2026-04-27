@@ -26,8 +26,8 @@
 QWidget {
     background-color: #FFFFFF;
     color: #242424;
-    font-family: "Segoe UI";
-
+    font-family: "Maple Mono CN";
+    font-size: 11pt;
 }
 
 QMainWindow {

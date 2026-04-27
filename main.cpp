@@ -1,14 +1,30 @@
 #include "mainwindow.h"
 
 #include <QApplication>
+#include <QDir>
 #include <QFile>
+#include <QFontDatabase>
 #include <QTextStream>
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    QFile qss(QStringLiteral("fluent2.qss"));
+    // Load bundled Maple Mono CN font
+    const QDir fontsDir(QCoreApplication::applicationDirPath() + QStringLiteral("/fonts"));
+    const QStringList ttfFiles = fontsDir.entryList({QStringLiteral("*.ttf")}, QDir::Files);
+    for (const QString &file : ttfFiles) {
+        QFontDatabase::addApplicationFont(fontsDir.filePath(file));
+    }
+
+    // Set application default font
+    QFont defaultFont(QStringLiteral("Maple Mono CN"), 11);
+    defaultFont.setStyleName(QStringLiteral("Regular"));
+    defaultFont.setStyleStrategy(QFont::PreferAntialias);
+    a.setFont(defaultFont);
+
+    // Load Fluent 2 stylesheet
+    QFile qss(QCoreApplication::applicationDirPath() + QStringLiteral("/fluent2.qss"));
     if (qss.open(QFile::ReadOnly | QFile::Text)) {
         QTextStream in(&qss);
         a.setStyleSheet(in.readAll());

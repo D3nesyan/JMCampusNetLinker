@@ -65,6 +65,9 @@ add_custom_command(TARGET JMCampusNetLinker POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
         "${CMAKE_CURRENT_SOURCE_DIR}/fluent2.qss"
         "$<TARGET_FILE_DIR:JMCampusNetLinker>/fluent2.qss"
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "${CMAKE_CURRENT_SOURCE_DIR}/fonts"
+        "$<TARGET_FILE_DIR:JMCampusNetLinker>/fonts"
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
