@@ -21,6 +21,7 @@ int main(int argc, char *argv[])
     QFont defaultFont(QStringLiteral("Maple Mono CN"), 11);
     defaultFont.setStyleName(QStringLiteral("Regular"));
     defaultFont.setStyleStrategy(QFont::PreferAntialias);
+    defaultFont.setHintingPreference(QFont::PreferNoHinting);
     a.setFont(defaultFont);
 
     // Load Fluent 2 stylesheet
