@@ -162,7 +162,7 @@
       </widget>
       <widget class="QWidget" name="ipManagerTab">
        <attribute name="title">
-        <string>IP 管理</string>
+        <string>高级设置</string>
        </attribute>
       </widget>
      </widget>
