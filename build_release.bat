@@ -1,39 +1,87 @@
 @echo off
 setlocal
 
-set "BUILD_DIR=build\Desktop_Qt_6_10_2_MinGW_64_bit-Release"
 set "EXE_NAME=JMCampusNetLinker.exe"
+
+:: Detect build directory
+set "BUILD_DIR="
+for %%d in (
+    "build\Desktop_Qt_6_10_2_MinGW_64_bit-Release"
+    "build"
+) do (
+    if exist "%%~d\CMakeCache.txt" (
+        set "BUILD_DIR=%%~d"
+    )
+)
+
+if "%BUILD_DIR%"=="" (
+    echo No existing CMake build found. Configuring...
+    cmake -B build -G "MinGW Makefiles"
+    if errorlevel 1 (
+        echo CMake configure failed. Set CMAKE_PREFIX_PATH to your Qt install.
+        goto :end
+    )
+    set "BUILD_DIR=build"
+)
+
+echo Build directory: %BUILD_DIR%
+
+echo [1/7] Building project...
+cmake --build "%BUILD_DIR%" --config Release
+if errorlevel 1 (
+    echo Build failed.
+    goto :end
+)
+
 set "SOURCE_EXE=%BUILD_DIR%\%EXE_NAME%"
 
-echo [1/4] Checking built executable...
+echo [2/7] Checking built executable...
 if not exist "%SOURCE_EXE%" (
     echo Built executable not found: %SOURCE_EXE%
     goto :end
 )
 
-echo [2/4] Checking windeployqt...
+echo [3/7] Checking windeployqt...
 where windeployqt >nul 2>nul
 if errorlevel 1 (
     echo windeployqt not found. Open a Qt command prompt or add Qt\bin to PATH.
     goto :end
 )
 
-echo [3/4] Copying exe to dist...
-if not exist dist mkdir dist
-copy /Y "%SOURCE_EXE%" "dist\%EXE_NAME%"
-if errorlevel 1 (
-    echo Failed to copy exe.
-    goto :end
-)
+echo [4/7] Preparing dist directory...
+if exist dist rmdir /S /Q dist
+mkdir dist
 
-echo [4/4] Running windeployqt. This may take some time...
+echo [5/7] Copying exe and assets to dist...
+copy /Y "%BUILD_DIR%\%EXE_NAME%" "dist\%EXE_NAME%" >nul
+if exist "%BUILD_DIR%\fluent.qss" copy /Y "%BUILD_DIR%\fluent.qss" "dist\fluent.qss" >nul
+if exist "%BUILD_DIR%\fonts" xcopy /E /Y /Q "%BUILD_DIR%\fonts" "dist\fonts\" >nul
+
+echo [6/7] Running windeployqt. This may take some time...
 windeployqt --release --no-translations "dist\%EXE_NAME%"
 if errorlevel 1 (
     echo windeployqt failed.
     goto :end
 )
 
-echo Package complete. Use Inno Setup to package the dist\ directory.
+echo [7/7] Creating installer with Inno Setup...
+set "ISCC="
+for %%d in ("C:\Program Files (x86)" "C:\Program Files" "D:\Program Files (x86)" "D:\Program Files" "E:\Program Files (x86)" "E:\Program Files") do (
+    if exist "%%~d\Inno Setup 6\ISCC.exe" (
+        set "ISCC=%%~d\Inno Setup 6\ISCC.exe"
+    )
+)
+if not "%ISCC%"=="" (
+    "%ISCC%" installer.iss
+    if errorlevel 1 (
+        echo Inno Setup failed.
+    ) else (
+        echo Installer created: Output\CampusNetTool_Setup.exe
+    )
+) else (
+    echo Inno Setup 6 not found. Skipping installer generation.
+    echo dist\ directory is ready for manual packaging.
+)
 
 :end
 echo.
