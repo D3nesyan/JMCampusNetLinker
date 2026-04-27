@@ -1,6 +1,7 @@
 <RCC>
   <qresource prefix="/icons">
     <file>chevron-down.xpm</file>
+    <file>chevron-up.xpm</file>
     <file>checkmark.xpm</file>
   </qresource>
 </RCC>
