@@ -12,8 +12,9 @@
 #include <QHBoxLayout>
 #include <QHeaderView>
 #include <QLabel>
-#include <QNetworkInterface>
 #include <QPushButton>
+
+#include <QNetworkInterface>
 #include <QStringList>
 #include <QTableWidget>
 #include <QTableWidgetItem>
@@ -59,15 +60,18 @@ IpManagerWidget::IpManagerWidget(QWidget *parent)
 
     configLayout->addRow(QStringLiteral("网卡选择"), adapterRowLayout);
 
-    auto *hintLabel = new QLabel(
+    auto *hintIcon = new QLabel(QStringLiteral("?"), configGroupBox);
+    hintIcon->setToolTip(
         QStringLiteral("请选择连接校园网的网卡，选错可能导致各种异常。\n"
                        "随机分配 IP 可绕过夜间断网（可能不可用，可多试几次）。\n"
-                       "切换其他网络前务必先点击「还原 DHCP」恢复。"),
-        configGroupBox);
-    hintLabel->setWordWrap(true);
-    hintLabel->setStyleSheet(
-        QStringLiteral("QLabel { color: #616161; font-size: 12px; padding-left: 4px; }"));
-    configLayout->addRow(hintLabel);
+                       "切换其他网络前务必先点击「还原 DHCP」恢复。"));
+    hintIcon->setCursor(Qt::PointingHandCursor);
+    hintIcon->setStyleSheet(
+        QStringLiteral("QLabel { color: #757575; font-size: 14px; font-weight: bold; "
+                       "border: 1px solid #9e9e9e; border-radius: 10px; "
+                       "min-width: 20px; min-height: 20px; }"));
+    hintIcon->setAlignment(Qt::AlignCenter);
+    adapterRowLayout->addWidget(hintIcon);
 
     configLayout->addRow(QStringLiteral("网段"),
                          new QLabel(QStringLiteral("172.19.0.0 / 16"), configGroupBox));
