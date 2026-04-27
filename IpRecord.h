@@ -27,7 +27,6 @@ public:
     bool deactivateByAdapter(QString adapter);
     bool isIpInUse(QString ip);
     QList<Record> getActiveRecords();
-    bool exportCsv(QString filePath);
 
 private:
     IpRecord();
@@ -38,7 +37,7 @@ private:
 
     bool ensureInitialized();
     QString databaseFilePath() const;
-    static QString escapeCsv(const QString &value);
+
 
     QSqlDatabase *m_db;
     bool m_initialized;

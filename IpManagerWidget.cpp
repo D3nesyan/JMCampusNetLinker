@@ -6,7 +6,7 @@
 #include <QDebug>
 #include <QAbstractItemView>
 #include <QComboBox>
-#include <QFileDialog>
+
 #include <QFormLayout>
 #include <QGroupBox>
 #include <QHBoxLayout>
@@ -44,7 +44,7 @@ IpManagerWidget::IpManagerWidget(QWidget *parent)
     , m_refreshButton(new QPushButton(QStringLiteral("刷新"), this))
     , m_assignButton(new QPushButton(QStringLiteral("随机分配 IP"), this))
     , m_restoreDhcpButton(new QPushButton(QStringLiteral("还原 DHCP"), this))
-    , m_exportButton(new QPushButton(QStringLiteral("导出 CSV"), this))
+
     , m_deleteRecordButton(new QPushButton(QStringLiteral("删除记录"), this))
     , m_tableWidget(new QTableWidget(this))
     , m_statusLabel(new QLabel(this))
@@ -85,7 +85,7 @@ IpManagerWidget::IpManagerWidget(QWidget *parent)
     auto *buttonLayout = new QHBoxLayout;
     buttonLayout->addWidget(m_assignButton);
     buttonLayout->addWidget(m_restoreDhcpButton);
-    buttonLayout->addWidget(m_exportButton);
+
     buttonLayout->addWidget(m_deleteRecordButton);
     buttonLayout->addStretch();
 
@@ -132,22 +132,6 @@ IpManagerWidget::IpManagerWidget(QWidget *parent)
         m_ipManager->restoreDhcp(adapter);
     });
 
-    connect(m_exportButton, &QPushButton::clicked, this, [this] {
-        const QString filePath = QFileDialog::getSaveFileName(
-                this,
-                QStringLiteral("导出 CSV"),
-                QStringLiteral("ip_records.csv"),
-                QStringLiteral("CSV Files (*.csv)"));
-        if (filePath.isEmpty()) {
-            return;
-        }
-
-        if (IpRecord::instance().exportCsv(filePath)) {
-            setStatusMessage(QStringLiteral("CSV 导出成功"), kSuccessColor);
-        } else {
-            setStatusMessage(QStringLiteral("CSV 导出失败"), kErrorColor);
-        }
-    });
 
     connect(m_deleteRecordButton, &QPushButton::clicked, this, [this] {
         const int row = m_tableWidget->currentRow();

@@ -2,13 +2,12 @@
 
 #include <QDateTime>
 #include <QDir>
-#include <QFile>
 #include <QFileInfo>
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QStandardPaths>
 #include <QSysInfo>
-#include <QTextStream>
+
 #include <QVariant>
 
 namespace {
@@ -134,39 +133,6 @@ QList<IpRecord::Record> IpRecord::getActiveRecords()
     return records;
 }
 
-bool IpRecord::exportCsv(QString filePath)
-{
-    if (!ensureInitialized()) {
-        return false;
-    }
-
-    QSqlQuery query(*m_db);
-    if (!query.exec(QStringLiteral(
-                "SELECT id, mac_address, adapter_name, assigned_ip, hostname, assigned_at, is_active "
-                "FROM ip_records ORDER BY assigned_at DESC"))) {
-        return false;
-    }
-
-    QFile file(filePath);
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
-        return false;
-    }
-
-    QTextStream out(&file);
-    out << "id,mac_address,adapter_name,assigned_ip,hostname,assigned_at,is_active\n";
-
-    while (query.next()) {
-        out << query.value(0).toString() << ','
-            << escapeCsv(query.value(1).toString()) << ','
-            << escapeCsv(query.value(2).toString()) << ','
-            << escapeCsv(query.value(3).toString()) << ','
-            << escapeCsv(query.value(4).toString()) << ','
-            << escapeCsv(query.value(5).toString()) << ','
-            << query.value(6).toString() << '\n';
-    }
-
-    return out.status() == QTextStream::Ok;
-}
 
 bool IpRecord::ensureInitialized()
 {
@@ -221,9 +187,3 @@ QString IpRecord::databaseFilePath() const
     return basePath + QStringLiteral("/campusnet/records.db");
 }
 
-QString IpRecord::escapeCsv(const QString &value)
-{
-    QString escaped = value;
-    escaped.replace('"', QStringLiteral("\"\""));
-    return QStringLiteral("\"%1\"").arg(escaped);
-}

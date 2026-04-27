@@ -28,7 +28,7 @@ private:
     QPushButton *m_refreshButton;
     QPushButton *m_assignButton;
     QPushButton *m_restoreDhcpButton;
-    QPushButton *m_exportButton;
+
     QPushButton *m_deleteRecordButton;
     QTableWidget *m_tableWidget;
     QLabel *m_statusLabel;
