@@ -42,6 +42,7 @@ IpManagerWidget::IpManagerWidget(QWidget *parent)
     , m_assignButton(new QPushButton(QStringLiteral("随机分配 IP"), this))
     , m_restoreDhcpButton(new QPushButton(QStringLiteral("还原 DHCP"), this))
     , m_exportButton(new QPushButton(QStringLiteral("导出 CSV"), this))
+    , m_deleteRecordButton(new QPushButton(QStringLiteral("删除记录"), this))
     , m_tableWidget(new QTableWidget(this))
     , m_statusLabel(new QLabel(this))
 {
@@ -68,6 +69,7 @@ IpManagerWidget::IpManagerWidget(QWidget *parent)
     buttonLayout->addWidget(m_assignButton);
     buttonLayout->addWidget(m_restoreDhcpButton);
     buttonLayout->addWidget(m_exportButton);
+    buttonLayout->addWidget(m_deleteRecordButton);
     buttonLayout->addStretch();
 
     m_tableWidget->setColumnCount(5);
@@ -109,6 +111,7 @@ IpManagerWidget::IpManagerWidget(QWidget *parent)
             return;
         }
 
+        m_pendingDhcpRestore = true;
         m_ipManager->restoreDhcp(adapter);
     });
 
@@ -129,6 +132,25 @@ IpManagerWidget::IpManagerWidget(QWidget *parent)
         }
     });
 
+    connect(m_deleteRecordButton, &QPushButton::clicked, this, [this] {
+        const int row = m_tableWidget->currentRow();
+        if (row < 0) {
+            setStatusMessage(QStringLiteral("请先选择要删除的记录"), kWarningColor);
+            return;
+        }
+
+        auto *item = m_tableWidget->item(row, 2); // 分配IP column
+        if (!item) {
+            return;
+        }
+
+        const QString ip = item->text();
+        IpRecord::instance().deactivate(ip);
+        m_lastAssignedIp.clear();
+        refreshTable();
+        setStatusMessage(QStringLiteral("已删除记录 %1").arg(ip), kSuccessColor);
+    });
+
     connect(m_ipManager, &IpManager::ipAssigned, this, [this](const QString &ip) {
         const QString adapter = currentAdapter();
         const QString mac = findMacAddressForAdapter(adapter);
@@ -140,11 +162,10 @@ IpManagerWidget::IpManagerWidget(QWidget *parent)
     });
 
     connect(m_ipManager, &IpManager::dhcpRestored, this, [this] {
-        if (!m_lastAssignedIp.isEmpty()) {
-            IpRecord::instance().deactivate(m_lastAssignedIp);
-            m_lastAssignedIp.clear();
-        }
-
+        m_pendingDhcpRestore = false;
+        const QString adapter = currentAdapter();
+        IpRecord::instance().deactivateByAdapter(adapter);
+        m_lastAssignedIp.clear();
         refreshTable();
         setStatusMessage(QStringLiteral("已还原 DHCP"), kSuccessColor);
     });
@@ -161,7 +182,18 @@ IpManagerWidget::IpManagerWidget(QWidget *parent)
 
     connect(m_ipManager, &IpManager::operationFailed, this,
             [this](const QString &reason) {
-                setStatusMessage(QStringLiteral("操作失败: %1").arg(reason), kErrorColor);
+                if (m_pendingDhcpRestore) {
+                    m_pendingDhcpRestore = false;
+                    const QString adapter = currentAdapter();
+                    IpRecord::instance().deactivateByAdapter(adapter);
+                    m_lastAssignedIp.clear();
+                    refreshTable();
+                    setStatusMessage(
+                        QStringLiteral("DHCP 还原失败，记录已清除 (%1)").arg(reason),
+                        kWarningColor);
+                } else {
+                    setStatusMessage(QStringLiteral("操作失败: %1").arg(reason), kErrorColor);
+                }
             });
 
     refreshAdapters();

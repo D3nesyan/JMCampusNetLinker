@@ -73,6 +73,20 @@ bool IpRecord::deactivate(QString ip)
     return query.exec();
 }
 
+bool IpRecord::deactivateByAdapter(QString adapter)
+{
+    if (!ensureInitialized()) {
+        return false;
+    }
+
+    QSqlQuery query(*m_db);
+    query.prepare(QStringLiteral(
+            "UPDATE ip_records SET is_active = 0 WHERE adapter_name = :adapter AND is_active = 1"));
+    query.bindValue(QStringLiteral(":adapter"), adapter);
+
+    return query.exec();
+}
+
 bool IpRecord::isIpInUse(QString ip)
 {
     if (!ensureInitialized()) {
