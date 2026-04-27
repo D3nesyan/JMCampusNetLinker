@@ -198,7 +198,6 @@ void MainWindow::saveSettings()
         return;
     }
 
-
     m_settings.setValue(QStringLiteral("userId"), ui->userIdEdit->text().trimmed());
 
     const bool rememberPwd = ui->rememberPwdCheckBox->isChecked();
@@ -220,6 +219,7 @@ QString MainWindow::encryptPwd(QString plainText)
     }
 
     const QString command = QStringLiteral(
+            "Add-Type -AssemblyName System.Security; "
             "[Convert]::ToBase64String([Security.Cryptography.ProtectedData]::Protect("
             "[Text.Encoding]::UTF8.GetBytes(%1), $null, 'CurrentUser'))")
             .arg(toPowerShellSingleQuoted(plainText));
@@ -240,6 +240,7 @@ QString MainWindow::decryptPwd(QString encryptedBase64)
     }
 
     const QString command = QStringLiteral(
+            "Add-Type -AssemblyName System.Security; "
             "[Text.Encoding]::UTF8.GetString([Security.Cryptography.ProtectedData]::Unprotect("
             "[Convert]::FromBase64String(%1), $null, 'CurrentUser'))")
             .arg(toPowerShellSingleQuoted(encryptedBase64));
