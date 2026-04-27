@@ -258,7 +258,7 @@ void MainWindow::updateButtonStates()
 {
     const bool idle = m_actionState == ActionState::None;
     ui->loginButton->setEnabled(idle);
-    ui->logoutButton->setEnabled(idle && m_isLoggedIn);
+    ui->logoutButton->setEnabled(idle);
 }
 
 void MainWindow::beginLogin(ActionState state)
