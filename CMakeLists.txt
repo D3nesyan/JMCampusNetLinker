@@ -28,6 +28,7 @@ set(PROJECT_SOURCES
         IpRecord.cpp
         IpRecord.h
         fluent2.qss
+        resources.qrc
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
