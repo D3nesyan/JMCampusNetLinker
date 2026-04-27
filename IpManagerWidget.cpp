@@ -67,9 +67,10 @@ IpManagerWidget::IpManagerWidget(QWidget *parent)
                        "切换其他网络前务必先点击「还原 DHCP」恢复。"));
     hintIcon->setCursor(Qt::PointingHandCursor);
     hintIcon->setStyleSheet(
-        QStringLiteral("QLabel { color: #757575; font-size: 14px; font-weight: bold; "
-                       "border: 1px solid #9e9e9e; border-radius: 10px; "
-                       "min-width: 20px; min-height: 20px; }"));
+        QStringLiteral("QLabel { color: #f42a10; font-size: 14px; font-weight: bold; "
+                       "border: 1px solid #f42a10; border-radius: 10px; "
+                       "min-width: 20px; min-height: 20px; }"
+                       "QLabel:hover { background: rgba(244,42,16,0.08); }"));
     hintIcon->setAlignment(Qt::AlignCenter);
     adapterRowLayout->addWidget(hintIcon);
 

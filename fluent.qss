@@ -2,11 +2,11 @@
    Fluent 2 Design System — adapted from PyQt-Fluent-Widgets
    ============================================================================
    Color tokens:
-     ThemeColorPrimary       #0078D4    Primary action / accent
-     ThemeColorLight1        #1A8CE8    Hover
-     ThemeColorLight2        #4DA3ED    Lighter
-     ThemeColorLight3        #80BAF1    Lightest
-     ThemeColorDark1         #005A9E    Pressed
+     ThemeColorPrimary       #f42a10    Primary action / accent
+     ThemeColorLight1        #f5533d    Hover
+     ThemeColorLight2        #f77563    Lighter
+     ThemeColorLight3        #f99789    Lightest
+     ThemeColorDark1         #c4220d    Pressed
      NeutralText             #000000    Primary text
      NeutralTextSecondary    #606060    Secondary text
      NeutralTextDisabled     rgba(0,0,0,0.36)
@@ -54,7 +54,7 @@ QTabBar::tab {
 QTabBar::tab:selected {
     color: #000000;
     font-weight: 600;
-    border-bottom: 2px solid #0078D4;
+    border-bottom: 2px solid #f42a10;
 }
 
 QTabBar::tab:hover:!selected {
@@ -105,7 +105,7 @@ QLineEdit {
     border-radius: 5px;
     padding: 5px 10px 6px 10px;
     min-height: 20px;
-    selection-background-color: #1A8CE8;
+    selection-background-color: #f5533d;
     selection-color: #FFFFFF;
 }
 
@@ -232,9 +232,9 @@ QPushButton:disabled {
 /* Primary button — login */
 QPushButton#loginButton {
     color: #FFFFFF;
-    background-color: #0078D4;
-    border: 1px solid #1A8CE8;
-    border-bottom: 1px solid #005A9E;
+    background-color: #f42a10;
+    border: 1px solid #f5533d;
+    border-bottom: 1px solid #c4220d;
     border-radius: 5px;
     padding: 5px 24px 6px 24px;
     min-height: 20px;
@@ -242,16 +242,16 @@ QPushButton#loginButton {
 }
 
 QPushButton#loginButton:hover {
-    background-color: #1A8CE8;
-    border: 1px solid #4DA3ED;
-    border-bottom: 1px solid #005A9E;
+    background-color: #f5533d;
+    border: 1px solid #f77563;
+    border-bottom: 1px solid #c4220d;
 }
 
 QPushButton#loginButton:pressed {
     color: rgba(255, 255, 255, 0.63);
-    background-color: #80BAF1;
-    border: 1px solid #80BAF1;
-    border-bottom: 1px solid #80BAF1;
+    background-color: #f99789;
+    border: 1px solid #f99789;
+    border-bottom: 1px solid #f99789;
 }
 
 QPushButton#loginButton:disabled {
@@ -265,7 +265,7 @@ QPushButton#loginButton:disabled {
 
 QCheckBox {
     color: #000000;
-    spacing: 8px;
+    spacing: 12px;
     background: transparent;
     outline: none;
 }
@@ -283,14 +283,14 @@ QCheckBox::indicator:hover {
 }
 
 QCheckBox::indicator:checked {
-    background-color: #0078D4;
-    border-color: #0078D4;
+    background-color: #f42a10;
+    border-color: #f42a10;
     image: url(:/icons/checkmark.xpm);
 }
 
 QCheckBox::indicator:checked:hover {
-    background-color: #1A8CE8;
-    border-color: #1A8CE8;
+    background-color: #f5533d;
+    border-color: #f5533d;
 }
 
 QCheckBox::indicator:disabled {
