@@ -2,6 +2,7 @@
 
 #include "IpManager.h"
 #include "IpRecord.h"
+#include "ThemeManager.h"
 
 #include <QDebug>
 #include <QAbstractItemView>
@@ -66,11 +67,17 @@ IpManagerWidget::IpManagerWidget(QWidget *parent)
                        "随机分配 IP 可绕过夜间断网（可能不可用，可多试几次）。\n"
                        "切换其他网络前务必先点击「还原 DHCP」恢复。"));
     hintIcon->setCursor(Qt::PointingHandCursor);
+    const QString themeColor = ThemeManager::instance().themeColor().name();
+    const auto hoverBg = QStringLiteral("rgba(%1,%2,%3,0.08)")
+        .arg(ThemeManager::instance().themeColor().red())
+        .arg(ThemeManager::instance().themeColor().green())
+        .arg(ThemeManager::instance().themeColor().blue());
     hintIcon->setStyleSheet(
-        QStringLiteral("QLabel { color: #f42a10; font-size: 14px; font-weight: bold; "
-                       "border: 1px solid #f42a10; border-radius: 10px; "
+        QStringLiteral("QLabel { color: %1; font-size: 14px; font-weight: bold; "
+                       "border: 1px solid %1; border-radius: 10px; "
                        "min-width: 20px; min-height: 20px; }"
-                       "QLabel:hover { background: rgba(244,42,16,0.08); }"));
+                       "QLabel:hover { background: %2; }")
+        .arg(themeColor, hoverBg));
     hintIcon->setAlignment(Qt::AlignCenter);
     adapterRowLayout->addWidget(hintIcon);
 

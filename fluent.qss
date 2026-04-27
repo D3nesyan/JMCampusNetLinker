@@ -1,25 +1,35 @@
 /* ============================================================================
-   Fluent 2 Design System — adapted from PyQt-Fluent-Widgets
+   Fluent Design — adapted from PyQt-Fluent-Widgets (zhiyiYo)
    ============================================================================
-   Color tokens:
-     ThemeColorPrimary       #f42a10    Primary action / accent
-     ThemeColorLight1        #f5533d    Hover
-     ThemeColorLight2        #f77563    Lighter
-     ThemeColorLight3        #f99789    Lightest
-     ThemeColorDark1         #c4220d    Pressed
-     NeutralText             #000000    Primary text
-     NeutralTextSecondary    #606060    Secondary text
-     NeutralTextDisabled     rgba(0,0,0,0.36)
-     NeutralBg               #FFFFFF    Surface
-     NeutralBgHover          rgba(249,249,249,0.5)
-     NeutralBgPressed        rgba(249,249,249,0.3)
-     NeutralBorder           rgba(0,0,0,0.073)
-     NeutralBorderBottom     rgba(0,0,0,0.183)
-     NeutralBorderDisabled   rgba(0,0,0,0.06)
-   Metrics: 5px input/btn radius, 9px menu radius
+   Runtime variables (substituted by ThemeManager):
+     {{ThemeColorPrimary}}   Primary accent (default #f42a10)
+     {{ThemeColorLight1}}    Hover state
+     {{ThemeColorLight2}}    Lighter variant
+     {{ThemeColorLight3}}    Pressed state
+     {{ThemeColorDark1}}     Bottom-border / dark accent
+   Static tokens:
+     TextPrimary             #000000
+     TextSecondary           #606060
+     TextDisabled            rgba(0,0,0,0.36)
+     Surface                 #FFFFFF
+     SurfaceAlt              rgb(249,249,249)
+     BgInput                 rgba(255,255,255,0.7)
+     BgHover                 rgba(249,249,249,0.5)
+     BgPressed               rgba(249,249,249,0.3)
+     BgSelected              rgba(0,0,0,0.06)
+     BgHoverDark             rgba(0,0,0,0.04)
+     Border                  rgba(0,0,0,0.073)
+     BorderBottom            rgba(0,0,0,0.183)
+     BorderDisabled          rgba(0,0,0,0.06)
+     BorderMenu              rgba(0,0,0,0.1)
+   Metrics:
+     Radius sm = 5px   (inputs, btns, checkboxes)
+     Radius md = 9px   (menus, cards)
+     Radius lg = 10px  (dialogs)
+     Radius pill = 4px (scrollbar, tooltip)
    ============================================================================ */
 
-/* ---- Base ---- */
+/* ===== Base ===== */
 
 QWidget {
     background-color: #FFFFFF;
@@ -32,7 +42,7 @@ QMainWindow {
     background-color: #FFFFFF;
 }
 
-/* ---- Tab Widget & Tab Bar ---- */
+/* ===== Tab Widget & Tab Bar ===== */
 
 QTabWidget::pane {
     border: none;
@@ -54,7 +64,7 @@ QTabBar::tab {
 QTabBar::tab:selected {
     color: #000000;
     font-weight: 600;
-    border-bottom: 2px solid #f42a10;
+    border-bottom: 2px solid {{ThemeColorPrimary}};
 }
 
 QTabBar::tab:hover:!selected {
@@ -66,7 +76,7 @@ QTabBar::tab:disabled {
     color: rgba(0, 0, 0, 0.36);
 }
 
-/* ---- Group Box (Card) ---- */
+/* ===== Group Box (Card) ===== */
 
 QGroupBox {
     background-color: #FFFFFF;
@@ -87,7 +97,7 @@ QGroupBox::title {
     color: #000000;
 }
 
-/* ---- Label ---- */
+/* ===== Label ===== */
 
 QLabel {
     color: #000000;
@@ -95,7 +105,11 @@ QLabel {
     border: none;
 }
 
-/* ---- Line Edit ---- */
+QLabel:disabled {
+    color: rgba(0, 0, 0, 0.36);
+}
+
+/* ===== Line Edit ===== */
 
 QLineEdit {
     color: #000000;
@@ -105,7 +119,7 @@ QLineEdit {
     border-radius: 5px;
     padding: 5px 10px 6px 10px;
     min-height: 20px;
-    selection-background-color: #f5533d;
+    selection-background-color: {{ThemeColorLight1}};
     selection-color: #FFFFFF;
 }
 
@@ -129,7 +143,7 @@ QLineEdit[echoMode="2"] {
     lineedit-password-character: 8226;
 }
 
-/* ---- Combo Box ---- */
+/* ===== Combo Box ===== */
 
 QComboBox {
     border: 1px solid rgba(0, 0, 0, 0.073);
@@ -146,9 +160,10 @@ QComboBox:hover {
     background-color: rgba(249, 249, 249, 0.5);
 }
 
-QComboBox:focus {
-    border: 1px solid rgba(0, 0, 0, 0.073);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.183);
+QComboBox:pressed {
+    background-color: rgba(249, 249, 249, 0.3);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.073);
+    color: rgba(0, 0, 0, 0.63);
 }
 
 QComboBox:disabled {
@@ -180,7 +195,7 @@ QComboBox::down-arrow:on {
 
 QComboBox QAbstractItemView {
     background-color: #FFFFFF;
-    border: 1px solid rgba(0, 0, 0, 0.073);
+    border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 5px;
     margin-top: 2px;
     padding: 4px 0;
@@ -198,7 +213,7 @@ QComboBox QAbstractItemView::item:hover {
     background-color: rgba(0, 0, 0, 0.04);
 }
 
-/* ---- Push Button ---- */
+/* ===== Push Button ===== */
 
 QPushButton {
     color: #000000;
@@ -229,12 +244,13 @@ QPushButton:disabled {
     border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 }
 
-/* Primary button — login */
+/* ===== Primary Button (login) ===== */
+
 QPushButton#loginButton {
     color: #FFFFFF;
-    background-color: #f42a10;
-    border: 1px solid #f5533d;
-    border-bottom: 1px solid #c4220d;
+    background-color: {{ThemeColorPrimary}};
+    border: 1px solid {{ThemeColorLight1}};
+    border-bottom: 1px solid {{ThemeColorDark1}};
     border-radius: 5px;
     padding: 5px 24px 6px 24px;
     min-height: 20px;
@@ -242,26 +258,24 @@ QPushButton#loginButton {
 }
 
 QPushButton#loginButton:hover {
-    background-color: #f5533d;
-    border: 1px solid #f77563;
-    border-bottom: 1px solid #c4220d;
+    background-color: {{ThemeColorLight1}};
+    border: 1px solid {{ThemeColorLight2}};
+    border-bottom: 1px solid {{ThemeColorDark1}};
 }
 
 QPushButton#loginButton:pressed {
     color: rgba(255, 255, 255, 0.63);
-    background-color: #f99789;
-    border: 1px solid #f99789;
-    border-bottom: 1px solid #f99789;
+    background-color: {{ThemeColorLight3}};
+    border: 1px solid {{ThemeColorLight3}};
 }
 
 QPushButton#loginButton:disabled {
     color: rgba(255, 255, 255, 0.9);
     background-color: rgb(205, 205, 205);
     border: 1px solid rgb(205, 205, 205);
-    border-bottom: 1px solid rgb(205, 205, 205);
 }
 
-/* ---- Check Box ---- */
+/* ===== Check Box ===== */
 
 QCheckBox {
     color: #000000;
@@ -283,14 +297,14 @@ QCheckBox::indicator:hover {
 }
 
 QCheckBox::indicator:checked {
-    background-color: #f42a10;
-    border-color: #f42a10;
+    background-color: {{ThemeColorPrimary}};
+    border-color: {{ThemeColorPrimary}};
     image: url(:/icons/checkmark.xpm);
 }
 
 QCheckBox::indicator:checked:hover {
-    background-color: #f5533d;
-    border-color: #f5533d;
+    background-color: {{ThemeColorLight1}};
+    border-color: {{ThemeColorLight1}};
 }
 
 QCheckBox::indicator:disabled {
@@ -302,20 +316,113 @@ QCheckBox:disabled {
     color: rgba(0, 0, 0, 0.36);
 }
 
-/* ---- Table Widget ---- */
+/* ===== Radio Button ===== */
+
+QRadioButton {
+    color: #000000;
+    spacing: 8px;
+    background-color: transparent;
+    outline: none;
+}
+
+QRadioButton::indicator {
+    width: 18px;
+    height: 18px;
+    border-radius: 11px;
+    border: 2px solid #999999;
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+QRadioButton::indicator:hover {
+    background-color: rgba(0, 0, 0, 0);
+}
+
+QRadioButton::indicator:pressed {
+    border: 2px solid #bbbbbb;
+}
+
+QRadioButton::indicator:checked {
+    width: 20px;
+    height: 20px;
+    border: none;
+    border-radius: 10px;
+    background-color: {{ThemeColorPrimary}};
+}
+
+QRadioButton::indicator:checked:hover {
+    background-color: {{ThemeColorLight1}};
+}
+
+QRadioButton::indicator:disabled {
+    border: 2px solid #bbbbbb;
+    background-color: transparent;
+}
+
+QRadioButton:disabled {
+    color: rgba(0, 0, 0, 0.36);
+}
+
+/* ===== Spin Box ===== */
+
+QSpinBox, QDoubleSpinBox {
+    color: #000000;
+    background-color: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(0, 0, 0, 0.073);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.183);
+    border-radius: 5px;
+    padding: 0px 10px 0 10px;
+    min-height: 20px;
+    selection-background-color: {{ThemeColorLight1}};
+}
+
+QSpinBox:hover, QDoubleSpinBox:hover {
+    background-color: rgba(249, 249, 249, 0.5);
+}
+
+QSpinBox:focus, QDoubleSpinBox:focus {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.073);
+    background-color: #FFFFFF;
+}
+
+QSpinBox:disabled, QDoubleSpinBox:disabled {
+    color: rgba(0, 0, 0, 0.36);
+    background-color: rgba(249, 249, 249, 0.3);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+QSpinBox::up-button, QDoubleSpinBox::up-button,
+QSpinBox::down-button, QDoubleSpinBox::down-button {
+    background-color: transparent;
+    border-radius: 4px;
+    margin: 0;
+}
+
+QSpinBox::up-button:hover, QDoubleSpinBox::up-button:hover,
+QSpinBox::down-button:hover, QDoubleSpinBox::down-button:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+}
+
+QSpinBox::up-button:pressed, QDoubleSpinBox::up-button:pressed,
+QSpinBox::down-button:pressed, QDoubleSpinBox::down-button:pressed {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+/* ===== Table View ===== */
 
 QTableWidget {
-    background-color: transparent;
+    background: transparent;
     border: 1px solid rgba(0, 0, 0, 0.073);
     border-radius: 5px;
     gridline-color: transparent;
     outline: none;
+    selection-background-color: transparent;
 }
 
 QTableWidget::item {
     background: transparent;
     border: none;
-    padding: 8px 12px;
+    padding: 8px 16px;
 }
 
 QTableWidget::item:selected {
@@ -331,8 +438,12 @@ QHeaderView::section {
     background-color: transparent;
     color: rgb(96, 96, 96);
     font-weight: 600;
-    padding: 10px 12px;
+    padding: 10px 16px;
     border: 1px solid rgba(0, 0, 0, 0.073);
+    border-left: none;
+}
+
+QHeaderView::section:horizontal {
     border-left: none;
     height: 33px;
 }
@@ -345,7 +456,7 @@ QHeaderView::section:hover {
     color: #000000;
 }
 
-/* ---- Scroll Bar ---- */
+/* ===== Scroll Bar ===== */
 
 QScrollBar:vertical {
     background: transparent;
@@ -401,7 +512,7 @@ QScrollBar::sub-page:horizontal {
     background: transparent;
 }
 
-/* ---- Status Bar ---- */
+/* ===== Status Bar ===== */
 
 QStatusBar {
     background-color: rgba(255, 255, 255, 0.7);
@@ -414,7 +525,7 @@ QStatusBar::item {
     border: none;
 }
 
-/* ---- Menu Bar ---- */
+/* ===== Menu ===== */
 
 QMenuBar {
     background-color: #FFFFFF;
@@ -453,7 +564,7 @@ QMenu::separator {
     margin: 4px 8px;
 }
 
-/* ---- Tool Tip ---- */
+/* ===== Tool Tip ===== */
 
 QToolTip {
     background-color: rgb(249, 249, 249);
@@ -461,4 +572,10 @@ QToolTip {
     border: 1px solid rgba(0, 0, 0, 0.06);
     border-radius: 4px;
     padding: 6px 10px;
+}
+
+/* ===== Dialog ===== */
+
+QDialog {
+    background-color: #FFFFFF;
 }

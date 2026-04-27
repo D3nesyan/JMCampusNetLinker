@@ -27,6 +27,8 @@ set(PROJECT_SOURCES
         IpManagerWidget.h
         IpRecord.cpp
         IpRecord.h
+        ThemeManager.cpp
+        ThemeManager.h
         fluent.qss
         resources.qrc
 )

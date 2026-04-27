@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include "ThemeManager.h"
 
 #include <QApplication>
 #include <QDir>
@@ -27,13 +28,8 @@ int main(int argc, char *argv[])
 
     a.setWindowIcon(QIcon(QStringLiteral(":/icons/jimei_auth_icon.svg")));
 
-    // Load Fluent 2 stylesheet
-    QFile qss(QCoreApplication::applicationDirPath() + QStringLiteral("/fluent.qss"));
-    if (qss.open(QFile::ReadOnly | QFile::Text)) {
-        QTextStream in(&qss);
-        a.setStyleSheet(in.readAll());
-        qss.close();
-    }
+    // Load Fluent stylesheet with theme variable substitution
+    ThemeManager::instance().applyGlobalStyleSheet();
 
     MainWindow w;
     w.show();
