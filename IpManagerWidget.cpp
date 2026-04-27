@@ -19,6 +19,8 @@
 #include <QTableWidgetItem>
 #include <QVBoxLayout>
 
+#include <algorithm>
+
 namespace {
 
 constexpr auto kSuccessColor = "#107C41";
@@ -204,10 +206,22 @@ IpManagerWidget::IpManagerWidget(QWidget *parent)
 void IpManagerWidget::refreshAdapters()
 {
     const QString previous = currentAdapter();
-    const QStringList adapters = m_ipManager->listAdapters();
+    QStringList adapters = m_ipManager->listAdapters();
 
-    qDebug() << "[IpManagerWidget] refreshAdapters previous:" << previous;
-    qDebug() << "[IpManagerWidget] refreshAdapters got adapters:" << adapters;
+    // Sort Ethernet/WLAN adapters first
+    std::stable_sort(adapters.begin(), adapters.end(),
+                     [](const QString &a, const QString &b) {
+                         const auto isPhysical = [](const QString &name) {
+                             const QString lower = name.toLower();
+                             return lower.contains(QStringLiteral("ethernet"))
+                                    || lower.contains(QStringLiteral("以太网"))
+                                    || lower.contains(QStringLiteral("wlan"))
+                                    || lower.contains(QStringLiteral("wi-fi"))
+                                    || lower.contains(QStringLiteral("wifi"))
+                                    || lower.contains(QStringLiteral("无线"));
+                         };
+                         return isPhysical(a) && !isPhysical(b);
+                     });
 
     m_adapterComboBox->clear();
     m_adapterComboBox->addItems(adapters);
@@ -216,8 +230,6 @@ void IpManagerWidget::refreshAdapters()
     if (index >= 0) {
         m_adapterComboBox->setCurrentIndex(index);
     }
-
-    qDebug() << "[IpManagerWidget] combo count after refresh:" << m_adapterComboBox->count();
 }
 
 void IpManagerWidget::refreshTable()
