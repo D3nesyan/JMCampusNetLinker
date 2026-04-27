@@ -77,7 +77,11 @@ MainWindow::MainWindow(QWidget *parent)
             });
 
     connect(ui->loginButton, &QPushButton::clicked, this, [this] {
-        beginLogin(ActionState::Login);
+        if (m_actionState == ActionState::Login || m_actionState == ActionState::AutoRelogin) {
+            cancelLogin();
+        } else {
+            beginLogin(ActionState::Login);
+        }
     });
 
     connect(ui->logoutButton, &QPushButton::clicked, this, [this] {
@@ -257,7 +261,15 @@ QString MainWindow::decryptPwd(QString encryptedBase64)
 void MainWindow::updateButtonStates()
 {
     const bool idle = m_actionState == ActionState::None;
-    ui->loginButton->setEnabled(idle);
+    const bool loggingIn = m_actionState == ActionState::Login
+                        || m_actionState == ActionState::AutoRelogin;
+
+    if (loggingIn) {
+        ui->loginButton->setText(tr("取消登录"));
+    } else {
+        ui->loginButton->setText(tr("登录"));
+    }
+    ui->loginButton->setEnabled(idle || loggingIn);
     ui->logoutButton->setEnabled(idle);
 }
 
@@ -285,6 +297,17 @@ void MainWindow::beginLogin(ActionState state)
 
     updateButtonStates();
     m_auth->login(userId, password, currentServiceType());
+}
+
+void MainWindow::cancelLogin()
+{
+    m_auth->cancel();
+    m_actionState = ActionState::None;
+    m_isLoggedIn = false;
+    m_reloginAttempts = 0;
+    stopOnlineMonitor();
+    setStatusLabel(false, tr("Status: Login cancelled"));
+    updateButtonStates();
 }
 
 void MainWindow::startOnlineMonitor()

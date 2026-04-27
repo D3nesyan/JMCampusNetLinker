@@ -85,6 +85,11 @@ void EportalAuth::startProbe()
     connect(m_reply, &QNetworkReply::finished, this, &EportalAuth::handleProbeFinished);
 }
 
+void EportalAuth::cancel()
+{
+    cleanupReply();
+}
+
 void EportalAuth::logout()
 {
     cleanupReply();

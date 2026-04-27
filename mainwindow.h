@@ -40,6 +40,7 @@ private:
     QString decryptPwd(QString encryptedBase64);
     void updateButtonStates();
     void beginLogin(ActionState state);
+    void cancelLogin();
     void startOnlineMonitor();
     void stopOnlineMonitor();
     void handleOfflineDetected(const QString &reason);

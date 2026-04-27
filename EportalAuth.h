@@ -24,6 +24,7 @@ public:
     explicit EportalAuth(QObject *parent = nullptr);
 
     void login(QString userId, QString password, ServiceType service);
+    void cancel();
     void logout();
 
 signals:
