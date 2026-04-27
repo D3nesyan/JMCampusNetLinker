@@ -170,7 +170,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::setStatusLabel(bool isOnline, const QString &text)
 {
-    const QString color = isOnline ? "#1b8a3a" : "#c0392b";
+    const QString color = isOnline ? QStringLiteral("#107C41") : QStringLiteral("#C42B1C");
     ui->statusLabel->setText(text);
     ui->statusLabel->setStyleSheet(
             QString("QLabel { color: %1; font-weight: 600; }").arg(color));

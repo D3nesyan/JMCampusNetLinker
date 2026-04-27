@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>860</width>
-    <height>620</height>
+    <width>880</width>
+    <height>640</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -58,10 +58,10 @@
            <set>Qt::AlignTop|Qt::AlignLeft</set>
           </property>
           <property name="horizontalSpacing">
-           <number>12</number>
+           <number>16</number>
           </property>
           <property name="verticalSpacing">
-           <number>14</number>
+           <number>16</number>
           </property>
           <item row="0" column="0">
            <widget class="QLabel" name="userIdTitleLabel">

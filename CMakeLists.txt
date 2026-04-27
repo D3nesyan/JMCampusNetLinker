@@ -27,6 +27,7 @@ set(PROJECT_SOURCES
         IpManagerWidget.h
         IpRecord.cpp
         IpRecord.h
+        fluent2.qss
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -56,6 +57,13 @@ target_link_libraries(JMCampusNetLinker PRIVATE
     Qt${QT_VERSION_MAJOR}::Widgets
     Qt${QT_VERSION_MAJOR}::Network
     Qt${QT_VERSION_MAJOR}::Sql
+)
+
+# Copy fluent2.qss alongside the executable
+add_custom_command(TARGET JMCampusNetLinker POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${CMAKE_CURRENT_SOURCE_DIR}/fluent2.qss"
+        "$<TARGET_FILE_DIR:JMCampusNetLinker>/fluent2.qss"
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

@@ -21,9 +21,9 @@
 
 namespace {
 
-constexpr auto kSuccessColor = "#1b8a3a";
-constexpr auto kErrorColor = "#c0392b";
-constexpr auto kWarningColor = "#d68910";
+constexpr auto kSuccessColor = "#107C41";
+constexpr auto kErrorColor = "#C42B1C";
+constexpr auto kWarningColor = "#797775";
 
 QTableWidgetItem *makeReadOnlyItem(const QString &text)
 {
@@ -198,7 +198,7 @@ IpManagerWidget::IpManagerWidget(QWidget *parent)
 
     refreshAdapters();
     refreshTable();
-    setStatusMessage(QStringLiteral("就绪"), QStringLiteral("#555555"));
+    setStatusMessage(QStringLiteral("就绪"), QStringLiteral("#616161"));
 }
 
 void IpManagerWidget::refreshAdapters()
