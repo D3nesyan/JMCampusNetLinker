@@ -56,6 +56,7 @@ MainWindow::MainWindow(QWidget *parent)
     });
 
     loadSettings();
+    m_loading = false;
     setStatusLabel(false, tr("Status: Idle"));
     updateWindowTitle(false);
 
@@ -193,6 +194,11 @@ void MainWindow::loadSettings()
 
 void MainWindow::saveSettings()
 {
+    if (m_loading) {
+        return;
+    }
+
+
     m_settings.setValue(QStringLiteral("userId"), ui->userIdEdit->text().trimmed());
 
     const bool rememberPwd = ui->rememberPwdCheckBox->isChecked();

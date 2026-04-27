@@ -55,6 +55,7 @@ private:
     ActionState m_actionState;
     int m_reloginAttempts;
     bool m_isLoggedIn;
+    bool m_loading = true;
 };
 
 #endif // MAINWINDOW_H
