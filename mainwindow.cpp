@@ -3,6 +3,7 @@
 
 #include "IpManagerWidget.h"
 #include "NetworkChecker.h"
+#include "ThemeManager.h"
 
 #include <QApplication>
 #include <QCheckBox>
@@ -174,7 +175,9 @@ MainWindow::~MainWindow()
 
 void MainWindow::setStatusLabel(bool isOnline, const QString &text)
 {
-    const QString color = isOnline ? QStringLiteral("#107C41") : QStringLiteral("#C42B1C");
+    const QString color = isOnline
+        ? QStringLiteral("#107C41")
+        : ThemeManager::instance().error().name();
     ui->statusLabel->setText(text);
     ui->statusLabel->setStyleSheet(
             QString("QLabel { color: %1; font-weight: 600; }").arg(color));

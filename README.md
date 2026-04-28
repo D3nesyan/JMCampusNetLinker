@@ -65,7 +65,7 @@ JMCampusNetLinker
 ├── IpManagerWidget.h/cpp # 高级设置页 UI
 ├── IpRecord.h/cpp        # SQLite IP 分配记录
 ├── ThemeManager.h/cpp    # 主题色管理，QSS 变量替换
-├── fluent.qss            # Fluent Design 样式表
+├── theme.qss             # Material You 样式表
 ├── mainwindow.ui         # 主窗口 UI 布局
 └── resources.qrc         # 图标资源
 ```
@@ -87,7 +87,7 @@ JMCampusNetLinker
 
 ### 主题
 
-`ThemeManager` 单例管理主题色，`fluent.qss` 使用 `{{ThemeColorPrimary}}` 等占位符，加载时自动替换。调用 `ThemeManager::instance().setThemeColor()` 即可运行时换肤。
+`ThemeManager` 单例管理主题色，`theme.qss` 使用 `{{M3Primary}}` 等 Material You 占位符，加载时自动替换。调用 `ThemeManager::instance().setThemeColor()` 即可运行时换肤。
 
 ## 许可
 

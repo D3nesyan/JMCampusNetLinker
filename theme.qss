@@ -1,0 +1,579 @@
+/* ============================================================
+ * Material Design 3 (Material You) Stylesheet for Qt
+ * Variables ({{M3*}}) are resolved by ThemeManager at runtime.
+ * Seed color default: #6750A4
+ * ============================================================ */
+
+/* === Global defaults === */
+QWidget {
+    color: {{M3OnSurface}};
+    background-color: {{M3Surface}};
+    font-size: 11pt;
+}
+
+QMainWindow {
+    background-color: {{M3Surface}};
+}
+
+/* ============================================================
+ * Push Buttons
+ * ============================================================ */
+
+/* --- Filled Button (Primary) --- */
+QPushButton#loginButton {
+    padding: 8px 24px;
+    border: none;
+    border-radius: 20px;
+    min-height: 40px;
+    font-weight: 500;
+    color: {{M3OnPrimary}};
+    background-color: {{M3Primary}};
+}
+QPushButton#loginButton:hover {
+    background-color: {{M3PrimaryHover}};
+}
+QPushButton#loginButton:pressed {
+    background-color: {{M3PrimaryPress}};
+}
+QPushButton#loginButton:disabled {
+    color: {{M3OutlineVariant}};
+    background-color: {{M3SurfaceContainerHighest}};
+}
+
+/* --- Filled Tonal Button --- */
+QPushButton#assignIpButton {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 20px;
+    min-height: 40px;
+    font-weight: 500;
+    color: {{M3OnPrimaryContainer}};
+    background-color: {{M3PrimaryContainer}};
+}
+QPushButton#assignIpButton:hover {
+    background-color: {{M3PrimaryContainerHover}};
+}
+QPushButton#assignIpButton:pressed {
+    background-color: {{M3PrimaryContainerPress}};
+}
+QPushButton#assignIpButton:disabled {
+    color: {{M3OutlineVariant}};
+    background-color: {{M3SurfaceContainerHighest}};
+}
+
+/* --- Text Button (low emphasis) --- */
+QPushButton#logoutButton,
+QPushButton#restoreDhcpButton,
+QPushButton#refreshButton,
+QPushButton#deleteRecordButton {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 20px;
+    min-height: 40px;
+    font-weight: 500;
+    color: {{M3Primary}};
+    background-color: transparent;
+}
+QPushButton#logoutButton:hover,
+QPushButton#restoreDhcpButton:hover,
+QPushButton#refreshButton:hover,
+QPushButton#deleteRecordButton:hover {
+    background-color: rgba({{M3PrimaryR}},{{M3PrimaryG}},{{M3PrimaryB}},0.08);
+}
+QPushButton#logoutButton:pressed,
+QPushButton#restoreDhcpButton:pressed,
+QPushButton#refreshButton:pressed,
+QPushButton#deleteRecordButton:pressed {
+    background-color: rgba({{M3PrimaryR}},{{M3PrimaryG}},{{M3PrimaryB}},0.12);
+}
+QPushButton#logoutButton:disabled,
+QPushButton#restoreDhcpButton:disabled,
+QPushButton#refreshButton:disabled,
+QPushButton#deleteRecordButton:disabled {
+    color: {{M3OutlineVariant}};
+    background-color: transparent;
+}
+
+/* --- Cancel / Generic Button --- */
+QPushButton#cancelLoginButton {
+    padding: 8px 16px;
+    border: 1px solid {{M3Outline}};
+    border-radius: 20px;
+    min-height: 40px;
+    font-weight: 500;
+    color: {{M3OnSurface}};
+    background-color: transparent;
+}
+QPushButton#cancelLoginButton:hover {
+    background-color: rgba({{M3PrimaryR}},{{M3PrimaryG}},{{M3PrimaryB}},0.08);
+}
+QPushButton#cancelLoginButton:pressed {
+    background-color: rgba({{M3PrimaryR}},{{M3PrimaryG}},{{M3PrimaryB}},0.12);
+}
+
+/* ============================================================
+ * Text Inputs
+ * ============================================================ */
+QLineEdit,
+QTextEdit,
+QPlainTextEdit,
+QSpinBox,
+QDoubleSpinBox,
+QTimeEdit,
+QDateEdit,
+QDateTimeEdit {
+    padding: 8px 12px;
+    border: 1px solid {{M3Outline}};
+    border-radius: 12px;
+    background-color: {{M3SurfaceContainerHighest}};
+    color: {{M3OnSurface}};
+    min-height: 40px;
+    selection-background-color: {{M3PrimaryContainer}};
+    selection-color: {{M3OnPrimaryContainer}};
+}
+QLineEdit:focus,
+QTextEdit:focus,
+QPlainTextEdit:focus,
+QSpinBox:focus,
+QDoubleSpinBox:focus,
+QTimeEdit:focus,
+QDateEdit:focus,
+QDateTimeEdit:focus {
+    border: 2px solid {{M3Primary}};
+    padding: 7px 11px;
+}
+QLineEdit:disabled,
+QTextEdit:disabled,
+QPlainTextEdit:disabled,
+QSpinBox:disabled,
+QDoubleSpinBox:disabled,
+QTimeEdit:disabled,
+QDateEdit:disabled,
+QDateTimeEdit:disabled {
+    color: {{M3OutlineVariant}};
+    border-color: {{M3OutlineVariant}};
+    background-color: {{M3SurfaceVariant}};
+}
+
+/* Spin box buttons */
+QSpinBox::up-button,
+QDoubleSpinBox::up-button,
+QTimeEdit::up-button,
+QDateEdit::up-button,
+QDateTimeEdit::up-button {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 28px;
+    border-left: 1px solid {{M3OutlineVariant}};
+    border-top-right-radius: 12px;
+    background-color: transparent;
+}
+QSpinBox::down-button,
+QDoubleSpinBox::down-button,
+QTimeEdit::down-button,
+QDateEdit::down-button,
+QDateTimeEdit::down-button {
+    subcontrol-origin: padding;
+    subcontrol-position: bottom right;
+    width: 28px;
+    border-left: 1px solid {{M3OutlineVariant}};
+    border-bottom-right-radius: 12px;
+    background-color: transparent;
+}
+QSpinBox::up-button:hover,
+QDoubleSpinBox::up-button:hover,
+QTimeEdit::up-button:hover,
+QDateEdit::up-button:hover,
+QDateTimeEdit::up-button:hover,
+QSpinBox::down-button:hover,
+QDoubleSpinBox::down-button:hover,
+QTimeEdit::down-button:hover,
+QDateEdit::down-button:hover,
+QDateTimeEdit::down-button:hover {
+    background-color: rgba({{M3PrimaryR}},{{M3PrimaryG}},{{M3PrimaryB}},0.08);
+}
+QSpinBox::up-arrow,
+QDoubleSpinBox::up-arrow,
+QTimeEdit::up-arrow,
+QDateEdit::up-arrow,
+QDateTimeEdit::up-arrow {
+    image: url(:/icons/chevron-up.xpm);
+}
+QSpinBox::down-arrow,
+QDoubleSpinBox::down-arrow,
+QTimeEdit::down-arrow,
+QDateEdit::down-arrow,
+QDateTimeEdit::down-arrow {
+    image: url(:/icons/chevron-down.xpm);
+}
+
+/* ============================================================
+ * Combo Box
+ * ============================================================ */
+QComboBox,
+QFontComboBox {
+    padding: 8px 12px;
+    border: 1px solid {{M3Outline}};
+    border-radius: 12px;
+    background-color: {{M3SurfaceContainerHighest}};
+    color: {{M3OnSurface}};
+    min-height: 40px;
+}
+QComboBox:hover,
+QFontComboBox:hover {
+    border-color: {{M3OnSurfaceVariant}};
+}
+QComboBox:on,
+QComboBox:focus,
+QFontComboBox:on,
+QFontComboBox:focus {
+    border: 2px solid {{M3Primary}};
+    padding: 7px 11px;
+}
+QComboBox::drop-down,
+QFontComboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 28px;
+    border-left: 1px solid {{M3OutlineVariant}};
+    border-top-right-radius: 12px;
+    border-bottom-right-radius: 12px;
+}
+QComboBox::down-arrow,
+QFontComboBox::down-arrow {
+    image: url(:/icons/chevron-down.xpm);
+}
+QComboBox QAbstractItemView {
+    border: 1px solid {{M3OutlineVariant}};
+    border-radius: 12px;
+    selection-background-color: {{M3PrimaryContainer}};
+    selection-color: {{M3OnPrimaryContainer}};
+    color: {{M3OnSurface}};
+    background-color: {{M3SurfaceContainerHighest}};
+    padding: 4px;
+    outline: none;
+}
+QComboBox QAbstractItemView::item {
+    min-height: 36px;
+    padding: 4px 12px;
+    border-radius: 8px;
+}
+
+/* ============================================================
+ * Check Box & Radio Button
+ * ============================================================ */
+QCheckBox,
+QRadioButton {
+    color: {{M3OnSurface}};
+    spacing: 8px;
+    min-height: 40px;
+}
+QCheckBox:disabled,
+QRadioButton:disabled {
+    color: {{M3OutlineVariant}};
+}
+QCheckBox::indicator {
+    width: 18px;
+    height: 18px;
+    border: 2px solid {{M3Outline}};
+    border-radius: 4px;
+    background-color: transparent;
+}
+QCheckBox::indicator:checked {
+    border: 2px solid {{M3Primary}};
+    border-radius: 4px;
+    background-color: {{M3Primary}};
+    image: url(:/icons/checkmark.svg);
+}
+QCheckBox::indicator:hover {
+    border-color: {{M3OnSurfaceVariant}};
+}
+QCheckBox::indicator:disabled {
+    border-color: {{M3OutlineVariant}};
+}
+QCheckBox::indicator:checked:disabled {
+    border-color: {{M3OutlineVariant}};
+    background-color: {{M3OutlineVariant}};
+}
+QRadioButton::indicator {
+    width: 18px;
+    height: 18px;
+    border: 2px solid {{M3Outline}};
+    border-radius: 10px;
+    background-color: transparent;
+}
+QRadioButton::indicator:checked {
+    border: 2px solid {{M3Primary}};
+    background-color: {{M3Primary}};
+}
+QRadioButton::indicator:hover {
+    border-color: {{M3OnSurfaceVariant}};
+}
+QRadioButton::indicator:disabled {
+    border-color: {{M3OutlineVariant}};
+}
+
+/* ============================================================
+ * Tab Widget & Tab Bar
+ * ============================================================ */
+QTabWidget::pane {
+    border: none;
+    background-color: {{M3Surface}};
+    border-top: 1px solid {{M3OutlineVariant}};
+    position: absolute;
+    top: -0.5em;
+    padding-top: 0.5em;
+}
+QTabWidget::tab-bar {
+    alignment: center;
+}
+QTabBar::tab {
+    padding: 8px 24px;
+    min-height: 40px;
+    color: {{M3OnSurfaceVariant}};
+    background-color: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    font-weight: 500;
+}
+QTabBar::tab:selected {
+    color: {{M3Primary}};
+    border-bottom: 2px solid {{M3Primary}};
+}
+QTabBar::tab:hover:!selected {
+    background-color: rgba({{M3PrimaryR}},{{M3PrimaryG}},{{M3PrimaryB}},0.08);
+    border-bottom: 2px solid {{M3OutlineVariant}};
+}
+QTabBar::tab:hover:selected {
+    background-color: rgba({{M3PrimaryR}},{{M3PrimaryG}},{{M3PrimaryB}},0.08);
+}
+
+/* ============================================================
+ * Group Box (Card)
+ * ============================================================ */
+QGroupBox {
+    border: 1px solid {{M3OutlineVariant}};
+    border-radius: 16px;
+    margin-top: 24px;
+    padding: 16px;
+    font-weight: 500;
+    color: {{M3OnSurfaceVariant}};
+}
+QGroupBox::title {
+    subcontrol-origin: margin;
+    subcontrol-position: top left;
+    padding: 0 8px;
+    color: {{M3OnSurface}};
+}
+
+/* ============================================================
+ * Table Widget
+ * ============================================================ */
+QTableWidget {
+    border: 1px solid {{M3OutlineVariant}};
+    border-radius: 12px;
+    background-color: {{M3Surface}};
+    gridline-color: {{M3OutlineVariant}};
+    color: {{M3OnSurface}};
+}
+QTableWidget::item {
+    padding: 8px 12px;
+    min-height: 40px;
+}
+QTableWidget::item:selected {
+    background-color: {{M3PrimaryContainer}};
+    color: {{M3OnPrimaryContainer}};
+}
+QHeaderView::section {
+    background-color: {{M3SurfaceVariant}};
+    color: {{M3OnSurfaceVariant}};
+    padding: 8px 12px;
+    border: none;
+    border-bottom: 1px solid {{M3OutlineVariant}};
+    font-weight: 500;
+}
+
+/* ============================================================
+ * Progress Bar
+ * ============================================================ */
+QProgressBar {
+    max-height: 4px;
+    text-align: center;
+    border: none;
+    border-radius: 2px;
+    background-color: {{M3SurfaceVariant}};
+    color: transparent;
+}
+QProgressBar::chunk {
+    background-color: {{M3Primary}};
+    border-radius: 2px;
+}
+QProgressBar:disabled {
+    background-color: {{M3SurfaceVariant}};
+}
+QProgressBar::chunk:disabled {
+    background-color: {{M3OutlineVariant}};
+}
+
+/* ============================================================
+ * Slider
+ * ============================================================ */
+QSlider::groove:horizontal {
+    height: 4px;
+    border-radius: 2px;
+    background-color: {{M3SurfaceVariant}};
+}
+QSlider::groove:vertical {
+    width: 4px;
+    border-radius: 2px;
+    background-color: {{M3SurfaceVariant}};
+}
+QSlider::handle:horizontal {
+    background: {{M3Primary}};
+    border: none;
+    width: 20px;
+    height: 20px;
+    margin: -8px 0;
+    border-radius: 10px;
+}
+QSlider::handle:vertical {
+    background: {{M3Primary}};
+    border: none;
+    width: 20px;
+    height: 20px;
+    margin: 0 -8px;
+    border-radius: 10px;
+}
+QSlider::handle:horizontal:hover,
+QSlider::handle:vertical:hover {
+    background-color: {{M3PrimaryHover}};
+}
+QSlider::sub-page:horizontal {
+    background-color: {{M3Primary}};
+    border-radius: 2px;
+}
+QSlider::add-page:horizontal {
+    background-color: {{M3SurfaceVariant}};
+    border-radius: 2px;
+}
+QSlider::sub-page:vertical {
+    background-color: {{M3SurfaceVariant}};
+    border-radius: 2px;
+}
+QSlider::add-page:vertical {
+    background-color: {{M3Primary}};
+    border-radius: 2px;
+}
+QSlider::add-page:disabled,
+QSlider::sub-page:disabled {
+    background-color: {{M3OutlineVariant}};
+}
+
+/* ============================================================
+ * Menu Bar & Menu
+ * ============================================================ */
+QMenuBar {
+    background-color: {{M3Surface}};
+    color: {{M3OnSurface}};
+    padding: 2px 0;
+    border-bottom: 1px solid {{M3OutlineVariant}};
+}
+QMenuBar::item {
+    color: {{M3OnSurfaceVariant}};
+    padding: 6px 12px;
+    border-radius: 8px;
+    margin: 2px;
+}
+QMenuBar::item:selected {
+    background-color: rgba({{M3PrimaryR}},{{M3PrimaryG}},{{M3PrimaryB}},0.08);
+    color: {{M3OnSurface}};
+}
+QMenu {
+    background-color: {{M3SurfaceContainerHighest}};
+    border: 1px solid {{M3OutlineVariant}};
+    border-radius: 12px;
+    padding: 4px;
+}
+QMenu::item {
+    color: {{M3OnSurface}};
+    padding: 8px 24px;
+    min-height: 40px;
+    border-radius: 8px;
+}
+QMenu::item:selected {
+    background-color: rgba({{M3PrimaryR}},{{M3PrimaryG}},{{M3PrimaryB}},0.08);
+    color: {{M3OnSurface}};
+}
+QMenu::separator {
+    height: 1px;
+    background-color: {{M3OutlineVariant}};
+    margin: 4px 12px;
+}
+
+/* ============================================================
+ * Scroll Bar
+ * ============================================================ */
+QScrollBar:horizontal {
+    max-height: 6px;
+    border: none;
+    margin: 0;
+    background: transparent;
+}
+QScrollBar:vertical {
+    max-width: 6px;
+    border: none;
+    margin: 0;
+    background: transparent;
+}
+QScrollBar::handle:horizontal,
+QScrollBar::handle:vertical {
+    background: {{M3OutlineVariant}};
+    border-radius: 3px;
+    min-height: 25px;
+    min-width: 25px;
+}
+QScrollBar::handle:horizontal:hover,
+QScrollBar::handle:vertical:hover {
+    background: {{M3OnSurfaceVariant}};
+}
+QScrollBar::add-line,
+QScrollBar::sub-line {
+    width: 0;
+    height: 0;
+    border: none;
+    background: none;
+}
+QScrollBar::add-page,
+QScrollBar::sub-page {
+    background: none;
+}
+
+/* ============================================================
+ * Status Bar
+ * ============================================================ */
+QStatusBar {
+    color: {{M3OnSurfaceVariant}};
+    background-color: {{M3Surface}};
+    border-top: 1px solid {{M3OutlineVariant}};
+    padding: 4px 12px;
+}
+
+/* ============================================================
+ * Tool Tip
+ * ============================================================ */
+QToolTip {
+    background-color: {{M3OnSurface}};
+    color: {{M3Surface}};
+    border: none;
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-size: 10pt;
+}
+
+/* ============================================================
+ * Scroll Area
+ * ============================================================ */
+QScrollArea {
+    background-color: {{M3Surface}};
+    border: none;
+}

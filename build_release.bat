@@ -54,7 +54,7 @@ mkdir dist
 
 echo [5/7] Copying exe and assets to dist...
 copy /Y "%BUILD_DIR%\%EXE_NAME%" "dist\%EXE_NAME%" >nul
-if exist "%BUILD_DIR%\fluent.qss" copy /Y "%BUILD_DIR%\fluent.qss" "dist\fluent.qss" >nul
+if exist "%BUILD_DIR%\theme.qss" copy /Y "%BUILD_DIR%\theme.qss" "dist\theme.qss" >nul
 if exist "%BUILD_DIR%\fonts" xcopy /E /Y /Q "%BUILD_DIR%\fonts" "dist\fonts\" >nul
 
 echo [6/7] Running windeployqt. This may take some time...

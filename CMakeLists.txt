@@ -29,7 +29,7 @@ set(PROJECT_SOURCES
         IpRecord.h
         ThemeManager.cpp
         ThemeManager.h
-        fluent.qss
+        theme.qss
         resources.qrc
         resources.rc
 )
@@ -63,11 +63,11 @@ target_link_libraries(JMCampusNetLinker PRIVATE
     Qt${QT_VERSION_MAJOR}::Sql
 )
 
-# Copy fluent.qss alongside the executable
+# Copy theme.qss alongside the executable
 add_custom_command(TARGET JMCampusNetLinker POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${CMAKE_CURRENT_SOURCE_DIR}/fluent.qss"
-        "$<TARGET_FILE_DIR:JMCampusNetLinker>/fluent.qss"
+        "${CMAKE_CURRENT_SOURCE_DIR}/theme.qss"
+        "$<TARGET_FILE_DIR:JMCampusNetLinker>/theme.qss"
     COMMAND ${CMAKE_COMMAND} -E copy_directory
         "${CMAKE_CURRENT_SOURCE_DIR}/fonts"
         "$<TARGET_FILE_DIR:JMCampusNetLinker>/fonts"

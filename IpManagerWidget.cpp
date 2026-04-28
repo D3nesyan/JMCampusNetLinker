@@ -26,8 +26,6 @@
 namespace {
 
 constexpr auto kSuccessColor = "#107C41";
-constexpr auto kErrorColor = "#C42B1C";
-constexpr auto kWarningColor = "#797775";
 
 QTableWidgetItem *makeReadOnlyItem(const QString &text)
 {
@@ -50,6 +48,11 @@ IpManagerWidget::IpManagerWidget(QWidget *parent)
     , m_tableWidget(new QTableWidget(this))
     , m_statusLabel(new QLabel(this))
 {
+    m_assignButton->setObjectName(QStringLiteral("assignIpButton"));
+    m_restoreDhcpButton->setObjectName(QStringLiteral("restoreDhcpButton"));
+    m_refreshButton->setObjectName(QStringLiteral("refreshButton"));
+    m_deleteRecordButton->setObjectName(QStringLiteral("deleteRecordButton"));
+
     auto *mainLayout = new QVBoxLayout(this);
 
     auto *configGroupBox = new QGroupBox(QStringLiteral("网段配置"), this);
@@ -67,17 +70,16 @@ IpManagerWidget::IpManagerWidget(QWidget *parent)
                        "随机分配 IP 可绕过夜间断网（可能不可用，可多试几次）。\n"
                        "切换其他网络前务必先点击「还原 DHCP」恢复。"));
     hintIcon->setCursor(Qt::PointingHandCursor);
-    const QString themeColor = ThemeManager::instance().themeColor().name();
-    const auto hoverBg = QStringLiteral("rgba(%1,%2,%3,0.08)")
-        .arg(ThemeManager::instance().themeColor().red())
-        .arg(ThemeManager::instance().themeColor().green())
-        .arg(ThemeManager::instance().themeColor().blue());
+    const auto &tm = ThemeManager::instance();
     hintIcon->setStyleSheet(
         QStringLiteral("QLabel { color: %1; font-size: 14px; font-weight: bold; "
-                       "border: 1px solid %1; border-radius: 10px; "
-                       "min-width: 20px; min-height: 20px; }"
-                       "QLabel:hover { background: %2; }")
-        .arg(themeColor, hoverBg));
+                       "border: 1px solid %1; border-radius: 12px; "
+                       "min-width: 24px; min-height: 24px; }"
+                       "QLabel:hover { background: rgba(%2,%3,%4,0.08); }")
+        .arg(tm.primary().name())
+        .arg(tm.primary().red())
+        .arg(tm.primary().green())
+        .arg(tm.primary().blue()));
     hintIcon->setAlignment(Qt::AlignCenter);
     adapterRowLayout->addWidget(hintIcon);
 
@@ -122,7 +124,7 @@ IpManagerWidget::IpManagerWidget(QWidget *parent)
     connect(m_assignButton, &QPushButton::clicked, this, [this] {
         const QString adapter = currentAdapter();
         if (adapter.isEmpty()) {
-            setStatusMessage(QStringLiteral("请先选择网卡"), kWarningColor);
+            setStatusMessage(QStringLiteral("请先选择网卡"), ThemeManager::instance().onSurfaceVariant().name());
             return;
         }
 
@@ -132,7 +134,7 @@ IpManagerWidget::IpManagerWidget(QWidget *parent)
     connect(m_restoreDhcpButton, &QPushButton::clicked, this, [this] {
         const QString adapter = currentAdapter();
         if (adapter.isEmpty()) {
-            setStatusMessage(QStringLiteral("请先选择网卡"), kWarningColor);
+            setStatusMessage(QStringLiteral("请先选择网卡"), ThemeManager::instance().onSurfaceVariant().name());
             return;
         }
 
@@ -144,7 +146,7 @@ IpManagerWidget::IpManagerWidget(QWidget *parent)
     connect(m_deleteRecordButton, &QPushButton::clicked, this, [this] {
         const int row = m_tableWidget->currentRow();
         if (row < 0) {
-            setStatusMessage(QStringLiteral("请先选择要删除的记录"), kWarningColor);
+            setStatusMessage(QStringLiteral("请先选择要删除的记录"), ThemeManager::instance().onSurfaceVariant().name());
             return;
         }
 
@@ -181,12 +183,12 @@ IpManagerWidget::IpManagerWidget(QWidget *parent)
 
     connect(m_ipManager, &IpManager::permissionDenied, this, [this] {
         setStatusMessage(QStringLiteral("请以管理员身份运行本程序"),
-                         kErrorColor);
+                         ThemeManager::instance().error().name());
     });
 
     connect(m_ipManager, &IpManager::noAvailableIp, this, [this] {
         setStatusMessage(QStringLiteral("172.19 网段未找到可用 IP，请检查网络连通性"),
-                         kWarningColor);
+                         ThemeManager::instance().onSurfaceVariant().name());
     });
 
     connect(m_ipManager, &IpManager::operationFailed, this,
@@ -199,15 +201,16 @@ IpManagerWidget::IpManagerWidget(QWidget *parent)
                     refreshTable();
                     setStatusMessage(
                         QStringLiteral("DHCP 还原失败，记录已清除 (%1)").arg(reason),
-                        kWarningColor);
+                        ThemeManager::instance().onSurfaceVariant().name());
                 } else {
-                    setStatusMessage(QStringLiteral("操作失败: %1").arg(reason), kErrorColor);
+                    setStatusMessage(QStringLiteral("操作失败: %1").arg(reason), ThemeManager::instance().error().name());
                 }
             });
 
     refreshAdapters();
     refreshTable();
-    setStatusMessage(QStringLiteral("就绪"), QStringLiteral("#616161"));
+    setStatusMessage(QStringLiteral("就绪"),
+                     ThemeManager::instance().onSurfaceVariant().name());
 }
 
 void IpManagerWidget::refreshAdapters()
