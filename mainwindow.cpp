@@ -77,6 +77,56 @@ MainWindow::MainWindow(QWidget *parent)
     ipTabLayout->addWidget(ipTitle);
     ipTabLayout->addWidget(m_ipManagerWidget);
 
+    // About page
+    auto *aboutLayout = new QVBoxLayout(ui->aboutTab);
+    aboutLayout->setContentsMargins(16, 12, 16, 12);
+    aboutLayout->addWidget(makeTitle(QStringLiteral("关于"), ui->aboutTab));
+
+    const QString aboutText =
+        QStringLiteral(
+            "<p style='line-height:1.6;'>"
+            "<b>JiMei Campus NetLinker</b> — 集美大学校园网认证工具"
+            "</p>"
+            "<p style='line-height:1.6; color:%1;'>"
+            "作者：D3nesyan &nbsp;|&nbsp; "
+            "<a href='https://github.com/D3nesyan' style='color:%2;'>GitHub</a> &nbsp;|&nbsp; "
+            "<a href='mailto:d3nesyan@qq.com' style='color:%2;'>d3nesyan@qq.com</a>"
+            "</p>"
+            "<hr style='border:none;border-top:1px solid %3;margin:16px 0;'>"
+            "<p style='line-height:1.6;'><b>使用方法</b></p>"
+            "<p style='line-height:1.6; color:%1;'>"
+            "<b>校园网认证</b><br>"
+            "输入学号和密码，选择运营商，点击「登录」即可完成 Eportal 认证。"
+            "登录成功后即可访问互联网。点击「退出登录」断开校园网连接。"
+            "</p>"
+            "<p style='line-height:1.6; color:%1;'>"
+            "<b>夜间断网</b><br>"
+            "夜间断网时段内，切换到「高级设置」，选择正确的物理网卡（以太网或 WLAN），"
+            "点击「随机分配 IP」获取 172.19 网段的静态 IP 地址。"
+            "分配成功后重新进行校园网认证即可恢复网络。"
+            "</p>"
+            "<p style='line-height:1.6; color:%1;'>"
+            "<b>⚠ 重要</b><br>"
+            "在切换到其他网络（如宿舍 Wi-Fi、手机热点）之前，<b>务必</b>先点击「还原 DHCP」"
+            "恢复自动获取 IP，否则将无法连接其他网络。<br>"
+            "分配 IP 时请务必选择正确的网卡，选错可能导致网络异常。"
+            "</p>")
+            .arg(ThemeManager::instance().onSurfaceVariant().name(),
+                 ThemeManager::instance().primary().name(),
+                 ThemeManager::instance().outlineVariant().name());
+
+    auto *aboutContent = new QLabel(aboutText, ui->aboutTab);
+    aboutContent->setObjectName(QStringLiteral("aboutContentLabel"));
+    aboutContent->setWordWrap(true);
+    aboutContent->setTextFormat(Qt::RichText);
+    aboutContent->setOpenExternalLinks(true);
+    QFont aboutFont(QStringLiteral("Microsoft YaHei"), 10);
+    aboutContent->setFont(aboutFont);
+    aboutContent->setStyleSheet(
+        QStringLiteral("QLabel { background: transparent; padding: 0; }"));
+    aboutLayout->addWidget(aboutContent);
+    aboutLayout->addStretch();
+
     ui->passwordEdit->setEchoMode(QLineEdit::Password);
     ui->serviceComboBox->addItems(QStringList{
             QStringLiteral("教育网接入"),

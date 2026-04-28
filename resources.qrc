@@ -6,5 +6,6 @@
     <file>jimei_auth_icon.svg</file>
     <file>nav_auth_icon.svg</file>
     <file>nav_settings_icon.svg</file>
+    <file>nav_about_icon.svg</file>
   </qresource>
 </RCC>

@@ -21,9 +21,12 @@ NavigationRail::NavigationRail(QWidget *parent)
                                    QStringLiteral("navItemAuth"));
     auto *settingsItem = createNavItem(QIcon(QStringLiteral(":/icons/nav_settings_icon.svg")),
                                        QStringLiteral("navItemSettings"));
+    auto *aboutItem = createNavItem(QIcon(QStringLiteral(":/icons/nav_about_icon.svg")),
+                                    QStringLiteral("navItemAbout"));
 
     m_layout->addWidget(authItem);
     m_layout->addWidget(settingsItem);
+    m_layout->addWidget(aboutItem);
     m_layout->addStretch();
 
     m_buttonGroup->setExclusive(true);

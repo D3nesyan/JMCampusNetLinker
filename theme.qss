@@ -122,7 +122,8 @@ QWidget#navigationRail {
 
 /* Navigation items (icon-only) */
 QPushButton#navItemAuth,
-QPushButton#navItemSettings {
+QPushButton#navItemSettings,
+QPushButton#navItemAbout {
     border: none;
     border-left: 3px solid transparent;
     border-radius: 16px;
@@ -132,12 +133,14 @@ QPushButton#navItemSettings {
     background-color: transparent;
 }
 QPushButton#navItemAuth:hover,
-QPushButton#navItemSettings:hover {
+QPushButton#navItemSettings:hover,
+QPushButton#navItemAbout:hover {
     background-color: rgba({{M3PrimaryR}},{{M3PrimaryG}},{{M3PrimaryB}},0.08);
     color: {{M3OnSurface}};
 }
 QPushButton#navItemAuth:checked,
-QPushButton#navItemSettings:checked {
+QPushButton#navItemSettings:checked,
+QPushButton#navItemAbout:checked {
     background-color: {{M3PrimaryContainer}};
     color: {{M3Primary}};
     border-left: 3px solid {{M3Primary}};
