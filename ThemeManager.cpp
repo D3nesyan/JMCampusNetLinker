@@ -18,7 +18,7 @@ ThemeManager &ThemeManager::instance()
 ThemeManager::ThemeManager()
     : QObject(nullptr)
 {
-    setThemeColor(QColor("#6750A4"));
+    setThemeColor(QColor("#D23B2C"));
 }
 
 void ThemeManager::setThemeColor(const QColor &seed)
