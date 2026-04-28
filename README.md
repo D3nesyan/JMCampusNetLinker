@@ -46,8 +46,8 @@ build_release.bat
 
 ## Credit
 
-本项目参考了 [jmuEportalAuth](https://github.com/openjmu/jmuEportalAuth)。
-
+- 本项目参考了 [jmuEportalAuth](https://github.com/openjmu/jmuEportalAuth)。
+- 全程使用 Claude Code + DeepSeek V4 ~~代码有点一坨但能跑就行~~
 ## 许可
 
 MIT
