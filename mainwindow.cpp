@@ -52,11 +52,13 @@ MainWindow::MainWindow(QWidget *parent)
     connect(navRail, &NavigationRail::currentIndexChanged,
             ui->stackedWidget, &QStackedWidget::setCurrentIndex);
 
-    // Page titles — large bold Android-style headers
+    // Page titles
     auto makeTitle = [](const QString &text, QWidget *parent) {
         auto *label = new QLabel(text, parent);
-        QFont f(QStringLiteral("Maple Mono CN"), 20);
-        f.setBold(true);
+        QFont f;
+        f.setFamily(QStringLiteral("Maple Mono NF CN"));
+        f.setPointSize(20);
+        f.setWeight(QFont::Bold);
         f.setHintingPreference(QFont::PreferNoHinting);
         f.setStyleStrategy(QFont::PreferAntialias);
         label->setFont(f);
