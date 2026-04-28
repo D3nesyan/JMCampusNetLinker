@@ -9,8 +9,8 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Network Sql)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Network Sql)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Network)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Network)
 
 set(PROJECT_SOURCES
         main.cpp
@@ -21,12 +21,6 @@ set(PROJECT_SOURCES
         NetworkChecker.h
         EportalAuth.cpp
         EportalAuth.h
-        IpManager.cpp
-        IpManager.h
-        IpManagerWidget.cpp
-        IpManagerWidget.h
-        IpRecord.cpp
-        IpRecord.h
         NavigationRail.cpp
         NavigationRail.h
         ThemeManager.cpp
@@ -62,7 +56,6 @@ endif()
 target_link_libraries(JMCampusNetLinker PRIVATE
     Qt${QT_VERSION_MAJOR}::Widgets
     Qt${QT_VERSION_MAJOR}::Network
-    Qt${QT_VERSION_MAJOR}::Sql
 )
 
 # Copy theme.qss alongside the executable

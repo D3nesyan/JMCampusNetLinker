@@ -1,7 +1,6 @@
 [Setup]
 AppName=JMCampusNetLinker
 AppVersion=1.0.0
-PrivilegesRequired=admin
 DefaultDirName={autopf}\JMCampusNetLinker
 DefaultGroupName=JMCampusNetLinker
 OutputBaseFilename=JMCampusNetLinker_Setup_x64

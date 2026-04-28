@@ -39,32 +39,8 @@ QPushButton#loginButton:disabled {
     background-color: {{M3SurfaceContainerHighest}};
 }
 
-/* --- Filled Tonal Button --- */
-QPushButton#assignIpButton {
-    padding: 8px 20px;
-    border: none;
-    border-radius: 20px;
-    min-height: 40px;
-    font-weight: 500;
-    color: {{M3OnPrimaryContainer}};
-    background-color: {{M3PrimaryContainer}};
-}
-QPushButton#assignIpButton:hover {
-    background-color: {{M3PrimaryContainerHover}};
-}
-QPushButton#assignIpButton:pressed {
-    background-color: {{M3PrimaryContainerPress}};
-}
-QPushButton#assignIpButton:disabled {
-    color: {{M3OutlineVariant}};
-    background-color: {{M3SurfaceContainerHighest}};
-}
-
 /* --- Text Button (low emphasis) --- */
-QPushButton#logoutButton,
-QPushButton#restoreDhcpButton,
-QPushButton#refreshButton,
-QPushButton#deleteRecordButton {
+QPushButton#logoutButton {
     padding: 8px 16px;
     border: none;
     border-radius: 20px;
@@ -73,22 +49,13 @@ QPushButton#deleteRecordButton {
     color: {{M3Primary}};
     background-color: transparent;
 }
-QPushButton#logoutButton:hover,
-QPushButton#restoreDhcpButton:hover,
-QPushButton#refreshButton:hover,
-QPushButton#deleteRecordButton:hover {
+QPushButton#logoutButton:hover {
     background-color: rgba({{M3PrimaryR}},{{M3PrimaryG}},{{M3PrimaryB}},0.08);
 }
-QPushButton#logoutButton:pressed,
-QPushButton#restoreDhcpButton:pressed,
-QPushButton#refreshButton:pressed,
-QPushButton#deleteRecordButton:pressed {
+QPushButton#logoutButton:pressed {
     background-color: rgba({{M3PrimaryR}},{{M3PrimaryG}},{{M3PrimaryB}},0.12);
 }
-QPushButton#logoutButton:disabled,
-QPushButton#restoreDhcpButton:disabled,
-QPushButton#refreshButton:disabled,
-QPushButton#deleteRecordButton:disabled {
+QPushButton#logoutButton:disabled {
     color: {{M3OutlineVariant}};
     background-color: transparent;
 }
@@ -122,7 +89,6 @@ QWidget#navigationRail {
 
 /* Navigation items (icon-only) */
 QPushButton#navItemAuth,
-QPushButton#navItemSettings,
 QPushButton#navItemAbout {
     border: none;
     border-left: 3px solid transparent;
@@ -133,13 +99,11 @@ QPushButton#navItemAbout {
     background-color: transparent;
 }
 QPushButton#navItemAuth:hover,
-QPushButton#navItemSettings:hover,
 QPushButton#navItemAbout:hover {
     background-color: rgba({{M3PrimaryR}},{{M3PrimaryG}},{{M3PrimaryB}},0.08);
     color: {{M3OnSurface}};
 }
 QPushButton#navItemAuth:checked,
-QPushButton#navItemSettings:checked,
 QPushButton#navItemAbout:checked {
     background-color: {{M3PrimaryContainer}};
     color: {{M3Primary}};
@@ -300,8 +264,7 @@ QComboBox QAbstractItemView::item {
 QLabel#userIdTitleLabel,
 QLabel#passwordTitleLabel,
 QLabel#serviceTitleLabel,
-QLabel#statusTitleLabel,
-QLabel#adapterTitleLabel {
+QLabel#statusTitleLabel {
     min-height: 40px;
 }
 

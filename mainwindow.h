@@ -7,7 +7,6 @@
 #include <QSettings>
 #include <QString>
 
-class IpManagerWidget;
 class NetworkChecker;
 class QTimer;
 
@@ -50,7 +49,6 @@ private:
     Ui::MainWindow *ui;
     NetworkChecker *m_networkChecker;
     EportalAuth *m_auth;
-    IpManagerWidget *m_ipManagerWidget;
     QTimer *m_onlineCheckTimer;
     QSettings m_settings;
     ActionState m_actionState;

@@ -185,7 +185,6 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="ipManagerTab"/>
       <widget class="QWidget" name="aboutTab"/>
      </widget>
     </item>

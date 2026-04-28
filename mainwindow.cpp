@@ -1,7 +1,6 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 
-#include "IpManagerWidget.h"
 #include "NavigationRail.h"
 #include "NetworkChecker.h"
 #include "ThemeManager.h"
@@ -39,7 +38,6 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
     , m_networkChecker(new NetworkChecker(this))
     , m_auth(new EportalAuth(this))
-    , m_ipManagerWidget(new IpManagerWidget(this))
     , m_onlineCheckTimer(new QTimer(this))
     , m_settings(QStringLiteral("JMCampusNetLinker"), QStringLiteral("JMCampusNetLinker"))
     , m_actionState(ActionState::None)
@@ -72,12 +70,6 @@ MainWindow::MainWindow(QWidget *parent)
     auto *authTitle = makeTitle(QStringLiteral("校园网认证"), ui->authTab);
     ui->authTabLayout->insertWidget(0, authTitle);
 
-    auto *ipTitle = makeTitle(QStringLiteral("高级设置"), ui->ipManagerTab);
-    auto *ipTabLayout = new QVBoxLayout(ui->ipManagerTab);
-    ipTabLayout->setContentsMargins(16, 12, 16, 0);
-    ipTabLayout->addWidget(ipTitle);
-    ipTabLayout->addWidget(m_ipManagerWidget);
-
     // About page
     auto *aboutLayout = new QVBoxLayout(ui->aboutTab);
     aboutLayout->setContentsMargins(16, 12, 16, 12);
@@ -104,18 +96,7 @@ MainWindow::MainWindow(QWidget *parent)
             "输入学号和密码，选择运营商，点击「登录」即可完成 Eportal 认证。"
             "登录成功后即可访问互联网。点击「退出登录」断开校园网连接。"
             "</p>"
-            "<p style='line-height:1.35; color:%1;'>"
-            "<b>夜间断网</b><br>"
-            "夜间断网时段内，切换到「高级设置」，选择正确的物理网卡（以太网或 WLAN），"
-            "点击「随机分配不断网IP」获取 172.19 网段的静态 IP 地址。"
-            "分配成功后重新进行校园网认证即可恢复网络。"
-            "</p>"
-            "<p style='line-height:1.35; color:%1;'>"
-            "<b>⚠ 重要</b><br>"
-            "在切换到其他网络（如宿舍 Wi-Fi、手机热点）之前，<b>务必</b>先点击「恢复动态IP（DHCP）」"
-            "恢复自动获取 IP，否则将无法连接其他网络。<br>"
-            "分配 IP 时请务必选择正确的网卡，选错可能导致网络异常。"
-            "</p>")
+)
             .arg(ThemeManager::instance().onSurfaceVariant().name(),
                  ThemeManager::instance().primary().name(),
                  ThemeManager::instance().outlineVariant().name(),
