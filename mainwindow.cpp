@@ -63,7 +63,7 @@ MainWindow::MainWindow(QWidget *parent)
         f.setStyleStrategy(QFont::PreferAntialias);
         label->setFont(f);
         label->setStyleSheet(
-            QStringLiteral("QLabel { color: %1; padding: 0 0 16px 0; }")
+            QStringLiteral("QLabel { color: %1; padding: 0 0 24px 0; }")
                 .arg(ThemeManager::instance().onSurface().name()));
         return label;
     };
