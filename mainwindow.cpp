@@ -91,6 +91,7 @@ MainWindow::MainWindow(QWidget *parent)
             "<p style='line-height:1.35; color:%1;'>"
             "作者：D3nesyan &nbsp;|&nbsp; "
             "<a href='https://github.com/D3nesyan' style='color:%2;'>GitHub</a> &nbsp;|&nbsp; "
+            "<a href='https://d3nesyan.github.io' style='color:%2;'>Blog</a> &nbsp;|&nbsp; "
             "<a href='mailto:d3nesyan@qq.com' style='color:%2;'>d3nesyan@qq.com</a>"
             "</p>"
             "<p style='line-height:1.35; color:%1;'>"
