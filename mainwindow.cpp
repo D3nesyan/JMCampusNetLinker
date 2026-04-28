@@ -85,31 +85,31 @@ MainWindow::MainWindow(QWidget *parent)
 
     const QString aboutText =
         QStringLiteral(
-            "<p style='line-height:1.6;'>"
+            "<p style='line-height:1.35;'>"
             "<b>JiMei Campus NetLinker</b> — 集美大学校园网认证工具"
             "</p>"
-            "<p style='line-height:1.6; color:%1;'>"
+            "<p style='line-height:1.35; color:%1;'>"
             "作者：D3nesyan &nbsp;|&nbsp; "
             "<a href='https://github.com/D3nesyan' style='color:%2;'>GitHub</a> &nbsp;|&nbsp; "
             "<a href='mailto:d3nesyan@qq.com' style='color:%2;'>d3nesyan@qq.com</a>"
             "</p>"
-            "<p style='line-height:1.6; color:%1;'>"
+            "<p style='line-height:1.35; color:%1;'>"
             "版本：v%4"
             "</p>"
             "<hr style='border:none;border-top:1px solid %3;margin:16px 0;'>"
-            "<p style='line-height:1.6;'><b>使用方法</b></p>"
-            "<p style='line-height:1.6; color:%1;'>"
+            "<p style='line-height:1.35;'><b>使用方法</b></p>"
+            "<p style='line-height:1.35; color:%1;'>"
             "<b>校园网认证</b><br>"
             "输入学号和密码，选择运营商，点击「登录」即可完成 Eportal 认证。"
             "登录成功后即可访问互联网。点击「退出登录」断开校园网连接。"
             "</p>"
-            "<p style='line-height:1.6; color:%1;'>"
+            "<p style='line-height:1.35; color:%1;'>"
             "<b>夜间断网</b><br>"
             "夜间断网时段内，切换到「高级设置」，选择正确的物理网卡（以太网或 WLAN），"
             "点击「随机分配 IP」获取 172.19 网段的静态 IP 地址。"
             "分配成功后重新进行校园网认证即可恢复网络。"
             "</p>"
-            "<p style='line-height:1.6; color:%1;'>"
+            "<p style='line-height:1.35; color:%1;'>"
             "<b>⚠ 重要</b><br>"
             "在切换到其他网络（如宿舍 Wi-Fi、手机热点）之前，<b>务必</b>先点击「还原 DHCP」"
             "恢复自动获取 IP，否则将无法连接其他网络。<br>"
@@ -125,7 +125,7 @@ MainWindow::MainWindow(QWidget *parent)
     aboutContent->setWordWrap(true);
     aboutContent->setTextFormat(Qt::RichText);
     aboutContent->setOpenExternalLinks(true);
-    QFont aboutFont(QStringLiteral("Microsoft YaHei"), 10);
+    QFont aboutFont(QStringLiteral("Maple Mono NF CN"), 11);
     aboutContent->setFont(aboutFont);
     aboutContent->setStyleSheet(
         QStringLiteral("QLabel { background: transparent; padding: 0; }"));
