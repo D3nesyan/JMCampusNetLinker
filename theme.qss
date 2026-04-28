@@ -292,6 +292,17 @@ QComboBox QAbstractItemView::item {
 }
 
 /* ============================================================
+ * Form Labels — match input height for baseline alignment
+ * ============================================================ */
+QLabel#userIdTitleLabel,
+QLabel#passwordTitleLabel,
+QLabel#serviceTitleLabel,
+QLabel#statusTitleLabel,
+QLabel#adapterTitleLabel {
+    min-height: 40px;
+}
+
+/* ============================================================
  * Check Box & Radio Button
  * ============================================================ */
 QCheckBox,

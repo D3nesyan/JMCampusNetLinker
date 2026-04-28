@@ -62,7 +62,9 @@ IpManagerWidget::IpManagerWidget(QWidget *parent)
     adapterRowLayout->addWidget(m_adapterComboBox, 1);
     adapterRowLayout->addWidget(m_refreshButton);
 
-    configLayout->addRow(QStringLiteral("网卡选择"), adapterRowLayout);
+    auto *adapterLabel = new QLabel(QStringLiteral("网卡选择"), configGroupBox);
+    adapterLabel->setObjectName(QStringLiteral("adapterTitleLabel"));
+    configLayout->addRow(adapterLabel, adapterRowLayout);
 
     auto *hintIcon = new QLabel(QStringLiteral("?"), configGroupBox);
     hintIcon->setToolTip(
