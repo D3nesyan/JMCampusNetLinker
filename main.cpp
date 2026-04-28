@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    // Load bundled Maple Mono CN font
+    // Load bundled Maple Mono fonts
     const QDir fontsDir(QCoreApplication::applicationDirPath() + QStringLiteral("/fonts"));
     const QStringList ttfFiles = fontsDir.entryList({QStringLiteral("*.ttf")}, QDir::Files);
     for (const QString &file : ttfFiles) {
@@ -20,8 +20,7 @@ int main(int argc, char *argv[])
     }
 
     // Set application default font
-    QFont defaultFont(QStringLiteral("Maple Mono CN"), 11);
-    defaultFont.setStyleName(QStringLiteral("Regular"));
+    QFont defaultFont(QStringLiteral("Maple Mono NF CN"), 11);
     defaultFont.setStyleStrategy(QFont::PreferAntialias);
     defaultFont.setHintingPreference(QFont::PreferNoHinting);
     a.setFont(defaultFont);
