@@ -64,7 +64,16 @@ if errorlevel 1 (
     goto :end
 )
 
-echo [7/7] Creating installer with Inno Setup...
+echo [7/8] Creating portable package...
+if not exist Output mkdir Output
+powershell -NoProfile -Command "Compress-Archive -Path 'dist\*' -DestinationPath 'Output\JMCampusNetLinker_Portable_x64.zip' -Force"
+if errorlevel 1 (
+    echo Portable package failed.
+) else (
+    echo Portable package created: Output\JMCampusNetLinker_Portable_x64.zip
+)
+
+echo [8/8] Creating installer with Inno Setup...
 set "ISCC="
 for %%d in ("C:\Program Files (x86)" "C:\Program Files" "D:\Program Files (x86)" "D:\Program Files" "E:\Program Files (x86)" "E:\Program Files") do (
     if exist "%%~d\Inno Setup 6\ISCC.exe" (
@@ -76,7 +85,7 @@ if not "%ISCC%"=="" (
     if errorlevel 1 (
         echo Inno Setup failed.
     ) else (
-        echo Installer created: Output\CampusNetTool_Setup.exe
+        echo Installer created: Output\JMCampusNetLinker_Setup_x64.exe
     )
 ) else (
     echo Inno Setup 6 not found. Skipping installer generation.
