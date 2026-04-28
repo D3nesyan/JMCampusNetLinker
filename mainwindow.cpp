@@ -21,6 +21,7 @@
 
 namespace {
 
+constexpr auto kAppVersion = "1.0.0";
 constexpr int kMaxReloginAttempts = 3;
 constexpr int kOnlineCheckIntervalMs = 60000;
 
@@ -92,6 +93,9 @@ MainWindow::MainWindow(QWidget *parent)
             "<a href='https://github.com/D3nesyan' style='color:%2;'>GitHub</a> &nbsp;|&nbsp; "
             "<a href='mailto:d3nesyan@qq.com' style='color:%2;'>d3nesyan@qq.com</a>"
             "</p>"
+            "<p style='line-height:1.6; color:%1;'>"
+            "版本：v%4"
+            "</p>"
             "<hr style='border:none;border-top:1px solid %3;margin:16px 0;'>"
             "<p style='line-height:1.6;'><b>使用方法</b></p>"
             "<p style='line-height:1.6; color:%1;'>"
@@ -113,7 +117,8 @@ MainWindow::MainWindow(QWidget *parent)
             "</p>")
             .arg(ThemeManager::instance().onSurfaceVariant().name(),
                  ThemeManager::instance().primary().name(),
-                 ThemeManager::instance().outlineVariant().name());
+                 ThemeManager::instance().outlineVariant().name(),
+                 QString::fromLatin1(kAppVersion));
 
     auto *aboutContent = new QLabel(aboutText, ui->aboutTab);
     aboutContent->setObjectName(QStringLiteral("aboutContentLabel"));
