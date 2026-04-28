@@ -8,7 +8,7 @@ Material Design 3 风格界面，JMU 红配色。
 
 | 校园网认证 | 高级设置 |
 |:---:|:---:|
-| ![认证](screenshot-auth.png) | ![高级](screenshot-advanced.png) |
+| ![认证](screenshots/screenshot-auth.png) | ![高级](screenshots/screenshot-advanced.png) |
 
 ## 功能
 
