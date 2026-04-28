@@ -16,7 +16,6 @@ Material Design 3 风格界面，JMU 红配色。
 
 - Eportal 校园网登录 / 退出，支持教育网、电信、联通、移动四种运营商
 - 记住密码（Windows DPAPI 加密存储）
-- 在线状态自动检测（60s 轮询），断网自动重连（最多 3 次）
 - 系统托盘最小化、开机自启
 
 ### 高级设置
@@ -73,7 +72,6 @@ JMCampusNetLinker/
 ```
 登录：MainWindow → EportalAuth::login()
       → GET 探测页 → POST 凭证 → 解析结果
-      → NetworkChecker 持续监控 → 断网 → AutoRelogin
 
 IP 分配：IpManagerWidget → IpManager::assignRandomIp()
          → QMetaObject::invokeMethod → IpWorker (QThread)
