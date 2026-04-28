@@ -4,5 +4,7 @@
     <file>chevron-up.xpm</file>
     <file>checkmark.svg</file>
     <file>jimei_auth_icon.svg</file>
+    <file>nav_auth_icon.svg</file>
+    <file>nav_settings_icon.svg</file>
   </qresource>
 </RCC>

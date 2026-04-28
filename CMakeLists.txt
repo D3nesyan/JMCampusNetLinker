@@ -27,6 +27,8 @@ set(PROJECT_SOURCES
         IpManagerWidget.h
         IpRecord.cpp
         IpRecord.h
+        NavigationRail.cpp
+        NavigationRail.h
         ThemeManager.cpp
         ThemeManager.h
         theme.qss

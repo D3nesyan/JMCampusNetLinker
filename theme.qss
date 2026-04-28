@@ -8,7 +8,6 @@
 QWidget {
     color: {{M3OnSurface}};
     background-color: {{M3Surface}};
-    font-size: 11pt;
 }
 
 QMainWindow {
@@ -109,6 +108,39 @@ QPushButton#cancelLoginButton:hover {
 }
 QPushButton#cancelLoginButton:pressed {
     background-color: rgba({{M3PrimaryR}},{{M3PrimaryG}},{{M3PrimaryB}},0.12);
+}
+
+/* ============================================================
+ * Navigation Rail
+ * ============================================================ */
+QWidget#navigationRail {
+    background-color: {{M3SurfaceContainerLow}};
+    border-right: 1px solid {{M3OutlineVariant}};
+    min-width: 80px;
+    max-width: 80px;
+}
+
+/* Navigation items (icon-only) */
+QPushButton#navItemAuth,
+QPushButton#navItemSettings {
+    border: none;
+    border-left: 3px solid transparent;
+    border-radius: 16px;
+    margin: 2px 8px;
+    padding: 0;
+    color: {{M3OnSurfaceVariant}};
+    background-color: transparent;
+}
+QPushButton#navItemAuth:hover,
+QPushButton#navItemSettings:hover {
+    background-color: rgba({{M3PrimaryR}},{{M3PrimaryG}},{{M3PrimaryB}},0.08);
+    color: {{M3OnSurface}};
+}
+QPushButton#navItemAuth:checked,
+QPushButton#navItemSettings:checked {
+    background-color: {{M3PrimaryContainer}};
+    color: {{M3Primary}};
+    border-left: 3px solid {{M3Primary}};
 }
 
 /* ============================================================

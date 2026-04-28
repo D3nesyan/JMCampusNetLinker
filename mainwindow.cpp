@@ -2,16 +2,19 @@
 #include "./ui_mainwindow.h"
 
 #include "IpManagerWidget.h"
+#include "NavigationRail.h"
 #include "NetworkChecker.h"
 #include "ThemeManager.h"
 
 #include <QApplication>
 #include <QCheckBox>
 #include <QComboBox>
+#include <QLabel>
 #include <QLineEdit>
 #include <QMessageBox>
 #include <QProcess>
 #include <QPushButton>
+#include <QStackedWidget>
 #include <QStringList>
 #include <QTimer>
 #include <QVBoxLayout>
@@ -44,8 +47,32 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    auto *navRail = new NavigationRail(this);
+    ui->centralLayout->insertWidget(0, navRail);
+    connect(navRail, &NavigationRail::currentIndexChanged,
+            ui->stackedWidget, &QStackedWidget::setCurrentIndex);
+
+    // Page titles — large bold Android-style headers
+    auto makeTitle = [](const QString &text, QWidget *parent) {
+        auto *label = new QLabel(text, parent);
+        QFont f(QStringLiteral("Maple Mono CN"), 20);
+        f.setBold(true);
+        f.setHintingPreference(QFont::PreferNoHinting);
+        f.setStyleStrategy(QFont::PreferAntialias);
+        label->setFont(f);
+        label->setStyleSheet(
+            QStringLiteral("QLabel { color: %1; padding: 0 0 16px 0; }")
+                .arg(ThemeManager::instance().onSurface().name()));
+        return label;
+    };
+
+    auto *authTitle = makeTitle(QStringLiteral("校园网认证"), ui->authTab);
+    ui->authTabLayout->insertWidget(0, authTitle);
+
+    auto *ipTitle = makeTitle(QStringLiteral("高级设置"), ui->ipManagerTab);
     auto *ipTabLayout = new QVBoxLayout(ui->ipManagerTab);
-    ipTabLayout->setContentsMargins(0, 0, 0, 0);
+    ipTabLayout->setContentsMargins(16, 12, 16, 0);
+    ipTabLayout->addWidget(ipTitle);
     ipTabLayout->addWidget(m_ipManagerWidget);
 
     ui->passwordEdit->setEchoMode(QLineEdit::Password);
