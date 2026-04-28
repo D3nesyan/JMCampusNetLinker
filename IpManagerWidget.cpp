@@ -41,8 +41,8 @@ IpManagerWidget::IpManagerWidget(QWidget *parent)
     , m_ipManager(new IpManager(this))
     , m_adapterComboBox(new QComboBox(this))
     , m_refreshButton(new QPushButton(QStringLiteral("刷新"), this))
-    , m_assignButton(new QPushButton(QStringLiteral("随机分配 IP"), this))
-    , m_restoreDhcpButton(new QPushButton(QStringLiteral("还原 DHCP"), this))
+    , m_assignButton(new QPushButton(QStringLiteral("随机分配不断网IP"), this))
+    , m_restoreDhcpButton(new QPushButton(QStringLiteral("恢复动态IP（DHCP）"), this))
 
     , m_deleteRecordButton(new QPushButton(QStringLiteral("删除记录"), this))
     , m_tableWidget(new QTableWidget(this))
@@ -69,8 +69,8 @@ IpManagerWidget::IpManagerWidget(QWidget *parent)
     auto *hintIcon = new QLabel(QStringLiteral("?"), configGroupBox);
     hintIcon->setToolTip(
         QStringLiteral("请选择连接校园网的网卡，选错可能导致各种异常。\n"
-                       "随机分配 IP 可绕过夜间断网（可能不可用，可多试几次）。\n"
-                       "切换其他网络前务必先点击「还原 DHCP」恢复。"));
+                       "随机分配不断网IP 可绕过夜间断网（可能不可用，可多试几次）。\n"
+                       "切换其他网络前务必先点击「恢复动态IP（DHCP）」恢复。"));
     hintIcon->setCursor(Qt::PointingHandCursor);
     const auto &tm = ThemeManager::instance();
     hintIcon->setStyleSheet(
@@ -180,7 +180,7 @@ IpManagerWidget::IpManagerWidget(QWidget *parent)
         IpRecord::instance().deactivateByAdapter(adapter);
         m_lastAssignedIp.clear();
         refreshTable();
-        setStatusMessage(QStringLiteral("已还原 DHCP"), kSuccessColor);
+        setStatusMessage(QStringLiteral("已恢复动态IP（DHCP）"), kSuccessColor);
     });
 
     connect(m_ipManager, &IpManager::permissionDenied, this, [this] {
